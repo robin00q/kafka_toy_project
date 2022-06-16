@@ -1,4 +1,4 @@
-package me.sjlee.order.domain;
+package me.sjlee.order.domain.models;
 
 import lombok.EqualsAndHashCode;
 

@@ -1,5 +1,7 @@
 package me.sjlee.order.domain;
 
+import me.sjlee.order.domain.models.Money;
+import me.sjlee.order.domain.models.OrderLine;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

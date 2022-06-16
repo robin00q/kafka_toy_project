@@ -1,5 +1,11 @@
 package me.sjlee.order.domain;
 
+import me.sjlee.order.domain.models.Address;
+import me.sjlee.order.domain.models.Order;
+import me.sjlee.order.domain.models.OrderLine;
+import me.sjlee.order.domain.models.Orderer;
+import me.sjlee.order.domain.models.Receiver;
+import me.sjlee.order.domain.models.ShippingInfo;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

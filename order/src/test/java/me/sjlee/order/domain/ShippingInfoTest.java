@@ -1,9 +1,11 @@
 package me.sjlee.order.domain;
 
+import me.sjlee.order.domain.models.Address;
+import me.sjlee.order.domain.models.Receiver;
+import me.sjlee.order.domain.models.ShippingInfo;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ShippingInfoTest {
 
