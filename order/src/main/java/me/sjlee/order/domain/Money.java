@@ -1,11 +1,13 @@
 package me.sjlee.order.domain;
 
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * immutable money class
  */
 @EqualsAndHashCode
+@ToString
 public class Money {
 
     private static final int MIN_MONEY = 0;
@@ -21,5 +23,9 @@ public class Money {
 
     public Money multiply(int quantity) {
         return new Money(value * quantity);
+    }
+
+    public Money sum(Money money) {
+        return new Money(money.value + value);
     }
 }

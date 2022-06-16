@@ -1,9 +1,7 @@
 package me.sjlee.order.domain;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 
-@Getter
 @EqualsAndHashCode
 public class OrderLine {
 
@@ -27,5 +25,9 @@ public class OrderLine {
     private void validate(String productId, int quantity) {
         if (productId == null) throw new IllegalStateException("[OrderLine] 제품 아이디는 비어있을 수 없습니다.");
         if (quantity <= 0) throw new IllegalStateException("[OrderLine] 수량은 0보다 작을 수 없습니다.");
+    }
+
+    public Money getAmounts() {
+        return amounts;
     }
 }
