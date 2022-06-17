@@ -3,27 +3,51 @@ package me.sjlee.order.domain.models;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * root entity for order
  */
-@EqualsAndHashCode(of = "uuid")
+@Entity
+@Getter @EqualsAndHashCode(of = "id")
+@Table(name = "purchase_order")
 public class Order {
 
-    private String uuid;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
+    private Long id;
 
+    @Embedded
     private Orderer orderer;
 
-    private List<OrderLine> orderLines;
+    @OneToMany
+    @JoinColumn(name = "order_line_id")
+    private List<OrderLine> orderLines = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "shipping_id")
     private ShippingInfo shippingInfo;
 
-    @Getter
+    @Convert(converter = MoneyConverter.class)
+    @Column(name = "total_amounts")
     private Money totalAmounts;
 
-    public Order(String uuid, Orderer orderer, List<OrderLine> orderLines, ShippingInfo shippingInfo) {
-        this.uuid = uuid;
+    protected Order() {}
+
+    public Order(Orderer orderer, List<OrderLine> orderLines, ShippingInfo shippingInfo) {
         this.orderer = orderer;
         this.orderLines = orderLines;
         this.shippingInfo = shippingInfo;

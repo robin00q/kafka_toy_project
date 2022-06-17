@@ -1,22 +1,26 @@
 package me.sjlee.order.domain.models;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Getter
+@Embeddable
 @EqualsAndHashCode
 public class Receiver {
 
-    private final String name;
-    private final String phoneNumber;
+    @Column(name = "receiver_name")
+    private String name;
 
-    public Receiver(String name, String phoneNumber) {
-        validate(name, phoneNumber);
+    @Column(name = "receiver_phone")
+    private String phone;
+
+    protected Receiver() {}
+
+    public Receiver(String name, String phone) {
         this.name = name;
-        this.phoneNumber = phoneNumber;
-    }
-
-    private void validate(String name, String phoneNumber) {
-        if (name == null || phoneNumber == null) {
-            throw new IllegalStateException("[Receiver] 주문의 수신자는 비어있을 수 없습니다");
-        }
+        this.phone = phone;
     }
 }

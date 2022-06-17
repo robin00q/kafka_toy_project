@@ -1,22 +1,25 @@
 package me.sjlee.order.domain.models;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-@EqualsAndHashCode
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
+@Getter @EqualsAndHashCode
 public class Orderer {
 
-    private final String userId;
-    private final String name;
+    @Column(name = "orderer_id")
+    private String id;
 
-    public Orderer(String userId, String name) {
-        validate(userId, name);
-        this.userId = userId;
+    @Column(name = "orderer_name")
+    private String name;
+
+    protected Orderer() {}
+
+    public Orderer(String id, String name) {
+        this.id = id;
         this.name = name;
-    }
-
-    private void validate(String uuid, String name) {
-        if (uuid == null || name == null) {
-            throw new IllegalStateException("[Orderer] 주문자는 비어있을 수 없습니다.");
-        }
     }
 }

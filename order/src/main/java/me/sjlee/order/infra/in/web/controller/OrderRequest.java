@@ -26,7 +26,7 @@ public class OrderRequest {
                 .collect(Collectors.toList());
         ShippingInfo shippingInfoDomain = shippingInfo.toShippingInfo();
 
-        return new Order(UUID.randomUUID().toString(),
+        return new Order(
                 ordererDomain,
                 orderLinesDomain,
                 shippingInfoDomain);

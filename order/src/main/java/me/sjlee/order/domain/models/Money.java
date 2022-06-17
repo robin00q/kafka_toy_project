@@ -1,18 +1,23 @@
 package me.sjlee.order.domain.models;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Embeddable;
 
 /**
  * immutable money class
  */
+@Getter
 @EqualsAndHashCode
-@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Money {
 
     private static final int MIN_MONEY = 0;
 
-    private final int value;
+    private int value;
 
     public Money(int value) {
         if (value < MIN_MONEY) {
