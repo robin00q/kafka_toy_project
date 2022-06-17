@@ -20,7 +20,7 @@ public class OrderRequest {
     private ShippingInfoRequest shippingInfo;
 
     public Order toOrder() {
-        Orderer ordererDomain = new Orderer(orderer.uuid, orderer.name);
+        Orderer ordererDomain = new Orderer(orderer.userId, orderer.name);
         List<OrderLine> orderLinesDomain = orderLines.stream()
                 .map(e -> new OrderLine(e.getProductId(), e.getPrice(), e.getQuantity()))
                 .collect(Collectors.toList());
@@ -32,9 +32,19 @@ public class OrderRequest {
                 shippingInfoDomain);
     }
 
+    public List<String> getProductIds() {
+        return orderLines.stream()
+                .map(e -> e.productId)
+                .collect(Collectors.toList());
+    }
+
+    public String getOrdererId() {
+        return orderer.userId;
+    }
+
     @Getter
-    static class OrdererRequest {
-        private String uuid;
+    class OrdererRequest {
+        private String userId;
         private String name;
     }
 

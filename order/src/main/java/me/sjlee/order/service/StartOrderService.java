@@ -11,10 +11,23 @@ import org.springframework.stereotype.Service;
 public class StartOrderService {
 
     private final OrderRepository orderRepository;
+    private final ProductApi productApi;
+    private final UserApi userApi;
 
     public void startOrder(OrderRequest orderRequest) {
-        // TODO : validate product, validate user
+        validateRequest(orderRequest);
+
         Order order = orderRequest.toOrder();
         orderRepository.save(order);
+    }
+
+    private void validateRequest(OrderRequest orderRequest) {
+        if (!productApi.isValidProducts(orderRequest.getProductIds())) {
+            throw new IllegalArgumentException("올바르지 않은 상품을 주문하였습니다.");
+        }
+
+        if (!userApi.isValidUser(orderRequest.getOrdererId())) {
+            throw new IllegalStateException("올바르지 않은 주문자입니다.");
+        }
     }
 }
