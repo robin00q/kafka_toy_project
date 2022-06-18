@@ -1,5 +1,6 @@
 package me.sjlee.order.infra.in.web.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.sjlee.order.domain.models.Address;
 import me.sjlee.order.domain.models.Order;
@@ -9,11 +10,11 @@ import me.sjlee.order.domain.models.Receiver;
 import me.sjlee.order.domain.models.ShippingInfo;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Getter
-public class OrderRequest {
+@AllArgsConstructor
+public class StartOrderRequest {
 
     private OrdererRequest orderer;
     private List<OrderLineRequest> orderLines;
@@ -43,20 +44,23 @@ public class OrderRequest {
     }
 
     @Getter
-    class OrdererRequest {
+    @AllArgsConstructor
+    public static class OrdererRequest {
         private Long userId;
         private String name;
     }
 
     @Getter
-    static class OrderLineRequest {
+    @AllArgsConstructor
+    public static class OrderLineRequest {
         private Long productId;
         private int price;
         private int quantity;
     }
 
     @Getter
-    static class ShippingInfoRequest {
+    @AllArgsConstructor
+    public static class ShippingInfoRequest {
         private AddressRequest address;
         private ReceiverRequest receiver;
 
@@ -68,13 +72,17 @@ public class OrderRequest {
         }
     }
 
-    static class AddressRequest {
+    @Getter
+    @AllArgsConstructor
+    public static class AddressRequest {
         private String address1;
         private String address2;
         private String zipCode;
     }
 
-    static class ReceiverRequest {
+    @Getter
+    @AllArgsConstructor
+    public static class ReceiverRequest {
         private String name;
         private String phoneNumber;
     }

@@ -3,7 +3,7 @@ package me.sjlee.order.service;
 import lombok.RequiredArgsConstructor;
 import me.sjlee.order.domain.models.Order;
 import me.sjlee.order.domain.repository.OrderRepository;
-import me.sjlee.order.infra.in.web.controller.OrderRequest;
+import me.sjlee.order.infra.in.web.controller.StartOrderRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,19 +14,20 @@ public class StartOrderService {
     private final ProductApi productApi;
     private final UserApi userApi;
 
-    public void startOrder(OrderRequest orderRequest) {
-        validateRequest(orderRequest);
+    public Long startOrder(StartOrderRequest startOrderRequest) {
+        validateRequest(startOrderRequest);
 
-        Order order = orderRequest.toOrder();
-        orderRepository.save(order);
+        Order saved = orderRepository.save(startOrderRequest.toOrder());
+
+        return saved.getId();
     }
 
-    private void validateRequest(OrderRequest orderRequest) {
-        if (!productApi.isValidProducts(orderRequest.getProductIds())) {
+    private void validateRequest(StartOrderRequest startOrderRequest) {
+        if (!productApi.isValidProducts(startOrderRequest.getProductIds())) {
             throw new IllegalArgumentException("올바르지 않은 상품을 주문하였습니다.");
         }
 
-        if (!userApi.isValidUser(orderRequest.getOrdererId())) {
+        if (!userApi.isValidUser(startOrderRequest.getOrdererId())) {
             throw new IllegalStateException("올바르지 않은 주문자입니다.");
         }
     }
