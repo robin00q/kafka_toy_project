@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface ProductApi {
 
-    boolean isValidProducts(List<String> productId);
+    boolean isValidProducts(List<Long> productId);
 }

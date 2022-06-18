@@ -11,14 +11,14 @@ import javax.persistence.Embeddable;
 public class Orderer {
 
     @Column(name = "orderer_id")
-    private String id;
+    private Long id;
 
     @Column(name = "orderer_name")
     private String name;
 
     protected Orderer() {}
 
-    public Orderer(String id, String name) {
+    public Orderer(Long id, String name) {
         this.id = id;
         this.name = name;
     }

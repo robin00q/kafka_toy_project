@@ -8,7 +8,7 @@ import java.util.List;
 @Component
 public class TrueProductApi implements ProductApi {
     @Override
-    public boolean isValidProducts(List<String> productId) {
+    public boolean isValidProducts(List<Long> productId) {
         return true;
     }
 }

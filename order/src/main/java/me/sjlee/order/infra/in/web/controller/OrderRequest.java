@@ -32,25 +32,25 @@ public class OrderRequest {
                 shippingInfoDomain);
     }
 
-    public List<String> getProductIds() {
+    public List<Long> getProductIds() {
         return orderLines.stream()
                 .map(e -> e.productId)
                 .collect(Collectors.toList());
     }
 
-    public String getOrdererId() {
+    public Long getOrdererId() {
         return orderer.userId;
     }
 
     @Getter
     class OrdererRequest {
-        private String userId;
+        private Long userId;
         private String name;
     }
 
     @Getter
     static class OrderLineRequest {
-        private String productId;
+        private Long productId;
         private int price;
         private int quantity;
     }

@@ -3,10 +3,13 @@ package me.sjlee.order.domain.models;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,17 +36,21 @@ public class Order {
     @Embedded
     private Orderer orderer;
 
-    @OneToMany
-    @JoinColumn(name = "order_line_id")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     private List<OrderLine> orderLines = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "shipping_id")
     private ShippingInfo shippingInfo;
 
     @Convert(converter = MoneyConverter.class)
     @Column(name = "total_amounts")
     private Money totalAmounts;
+
+    @Column(name = "order_status")
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     protected Order() {}
 
@@ -52,6 +59,7 @@ public class Order {
         this.orderLines = orderLines;
         this.shippingInfo = shippingInfo;
         this.totalAmounts = calculateTotalAmount(orderLines);
+        this.status = OrderStatus.PAYMENT_WAITING;
     }
 
     private Money calculateTotalAmount(List<OrderLine> orderLines) {

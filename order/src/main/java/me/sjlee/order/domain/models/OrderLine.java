@@ -21,8 +21,11 @@ public class OrderLine {
     @Column(name = "order_line_id")
     private Long id;
 
+    @Column(name = "order_id")
+    private Long orderId;
+
     @Column(name = "product_id")
-    private String productId;
+    private Long productId;
 
     @Convert(converter = MoneyConverter.class)
     @Column(name = "price")
@@ -38,7 +41,7 @@ public class OrderLine {
     protected OrderLine() {
     }
 
-    public OrderLine(String productId, int price, int quantity) {
+    public OrderLine(Long productId, int price, int quantity) {
         this.productId = productId;
         this.price = new Money(price);
         this.quantity = quantity;
