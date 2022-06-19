@@ -1,6 +1,7 @@
 package me.sjlee.order.domain.repository;
 
 import me.sjlee.order.domain.models.Address;
+import me.sjlee.order.domain.models.Money;
 import me.sjlee.order.domain.models.Order;
 import me.sjlee.order.domain.models.OrderLine;
 import me.sjlee.order.domain.models.Orderer;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,5 +56,18 @@ class OrderRepositoryTest {
 
         // then
         assertThat(saved.getId()).isNotNull();
+    }
+
+    @Test
+    void findOrderByIdAndTotalAmounts() {
+        // given
+        Order saved = orderRepository.save(new Order(orderer, orderLines, shippingInfo));
+
+        // when
+        Optional<Order> findOrder = orderRepository.findOrderByIdAndTotalAmounts(saved.getId(), saved.getTotalAmounts());
+
+        // then
+        assertThat(findOrder.isPresent()).isTrue();
+        assertThat(findOrder.get().getTotalAmounts()).isEqualTo(new Money(500000));
     }
 }
