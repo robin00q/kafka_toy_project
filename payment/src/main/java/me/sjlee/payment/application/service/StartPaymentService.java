@@ -20,11 +20,12 @@ public class StartPaymentService {
 
         Payment payment = new Payment(request.getOrderId(), new Money(request.getAmounts()), request.getPayedBy());
         // 저장을 통해 결제가 됐다고 가정한다.
-        Payment saved = moneyRepository.save(payment);
+        moneyRepository.save(payment);
 
         // TODO : send payment to kafka
+        payment.finishPayment();
 
-        return saved.getId();
+        return payment.getId();
     }
 
     private void validateOrder(StartPaymentRequest request) {
