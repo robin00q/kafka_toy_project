@@ -22,7 +22,6 @@ public class StartPaymentService {
         // 저장을 통해 결제가 됐다고 가정한다.
         moneyRepository.save(payment);
 
-        // TODO : send payment to kafka
         payment.finishPayment();
 
         return payment.getId();
