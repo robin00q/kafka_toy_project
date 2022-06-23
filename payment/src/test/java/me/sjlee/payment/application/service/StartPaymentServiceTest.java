@@ -27,6 +27,11 @@ class StartPaymentServiceTest {
         startPaymentService.startPayment(request);
 
         // then
+        try {
+            Thread.sleep(3000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PaymentFinishedEventHandler {
 
-    private static final String PAYMENT_FINISHED_TOPIC = "test";
+    private static final String PAYMENT_FINISHED_TOPIC = "payments2";
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
