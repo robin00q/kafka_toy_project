@@ -25,7 +25,7 @@ public class KafkaProducerConfig {
         /**
          * 필수 옵션 (bootstrap.servers, key.serializer, value.serializer)
          */
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093"); // 1개 이상의 브로커를 작성할 수 있다.
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092,localhost:39092"); // 1개 이상의 브로커를 작성할 수 있다.
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class); // 키 직렬화 클래스 명시
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class); // 값 직렬화 클래스 명시
 
