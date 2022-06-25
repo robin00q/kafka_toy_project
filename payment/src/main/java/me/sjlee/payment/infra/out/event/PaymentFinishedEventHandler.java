@@ -1,5 +1,7 @@
 package me.sjlee.payment.infra.out.event;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.sjlee.payment.domain.event.PaymentFinishedEvent;
@@ -16,11 +18,19 @@ public class PaymentFinishedEventHandler {
     private static final String PAYMENT_FINISHED_TOPIC = "payments";
 
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
     @EventListener(PaymentFinishedEvent.class)
     @Async
     public void handle(PaymentFinishedEvent event) {
         log.info("send kafka message to topic : {}, orderId : {}", PAYMENT_FINISHED_TOPIC, event.getOrderId());
-        kafkaTemplate.send(PAYMENT_FINISHED_TOPIC, String.valueOf(event.getOrderId()));
+
+        PaymentFinishedRecord record = new PaymentFinishedRecord(event.getOrderId(), event.getAmount().getValue());
+
+        try {
+            kafkaTemplate.send(PAYMENT_FINISHED_TOPIC, objectMapper.writeValueAsString(record));
+        } catch (JsonProcessingException e) {
+            log.error("[결제완료] 카프카 이벤트 전송 실패");
+        }
     }
 }

@@ -53,6 +53,6 @@ public class Payment extends AbstractAggregateRoot<Payment> {
     }
 
     public void finishPayment() {
-        Events.raise(new PaymentFinishedEvent(orderId));
+        Events.raise(new PaymentFinishedEvent(orderId, amount));
     }
 }
