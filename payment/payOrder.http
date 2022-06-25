@@ -1,0 +1,18 @@
+POST localhost:8081/pay/order
+Content-Type: application/json
+
+{
+  "orderId": 1,
+  "amounts": 360000,
+  "payedBy": "CREDIT_CARD"
+}
+
+###
+POST localhost:8081/pay/order
+Content-Type: application/json
+
+{
+  "orderId": 2,
+  "amounts": 500000,
+  "payedBy": "KAKAO"
+}

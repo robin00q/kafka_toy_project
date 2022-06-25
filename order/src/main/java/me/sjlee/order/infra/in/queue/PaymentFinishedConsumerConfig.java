@@ -24,23 +24,14 @@ public class PaymentFinishedConsumerConfig {
 
     public static final String PAYMENTS_CONSUMER_GROUP = "payments_consumer_group";
 
-    @Slf4j
-    static class PaymentFinishedMessageListener implements AcknowledgingMessageListener<String, String> {
-
-        @Override
-        @KafkaListener(topics = "payments", groupId = PaymentFinishedConsumerConfig.PAYMENTS_CONSUMER_GROUP)
-        public void onMessage(ConsumerRecord<String, String> data, Acknowledgment acknowledgment) {
-            log.info("consume Record: {}", data.toString());
-            acknowledgment.acknowledge();
-        }
-    }
+    private final PaymentFinishedKafkaListener kafkaListener;
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
-        factory.getContainerProperties().setMessageListener(listener());
+        factory.getContainerProperties().setMessageListener(kafkaListener);
 
         return factory;
     }
@@ -61,11 +52,6 @@ public class PaymentFinishedConsumerConfig {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, PAYMENTS_CONSUMER_GROUP);
 
         return new DefaultKafkaConsumerFactory<>(props);
-    }
-
-    @Bean
-    public PaymentFinishedMessageListener listener() {
-        return new PaymentFinishedMessageListener();
     }
 
 }

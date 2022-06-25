@@ -33,13 +33,13 @@ public class StartOrderRequest {
                 shippingInfoDomain);
     }
 
-    public List<Long> getProductIds() {
+    public List<Long> toProductIds() {
         return orderLines.stream()
                 .map(e -> e.productId)
                 .collect(Collectors.toList());
     }
 
-    public Long getOrdererId() {
+    public Long toOrdererId() {
         return orderer.userId;
     }
 

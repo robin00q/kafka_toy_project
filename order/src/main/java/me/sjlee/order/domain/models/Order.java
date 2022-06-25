@@ -71,4 +71,8 @@ public class Order {
 
         return money;
     }
+
+    public void finishPayment() {
+        this.status = OrderStatus.PREPARE_SHIPPING;
+    }
 }

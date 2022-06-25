@@ -23,11 +23,11 @@ public class StartOrderService {
     }
 
     private void validateRequest(StartOrderRequest startOrderRequest) {
-        if (!productApi.isValidProducts(startOrderRequest.getProductIds())) {
+        if (!productApi.isValidProducts(startOrderRequest.toProductIds())) {
             throw new IllegalArgumentException("올바르지 않은 상품을 주문하였습니다.");
         }
 
-        if (!userApi.isValidUser(startOrderRequest.getOrdererId())) {
+        if (!userApi.isValidUser(startOrderRequest.toOrdererId())) {
             throw new IllegalStateException("올바르지 않은 주문자입니다.");
         }
     }
