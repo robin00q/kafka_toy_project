@@ -1,4 +1,4 @@
-package me.sjlee.payment.infra.out.event;
+package me.sjlee.payment.infra.out.queue;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
