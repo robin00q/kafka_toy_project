@@ -6,8 +6,6 @@ import me.sjlee.payment.common.Events;
 import me.sjlee.payment.domain.event.PaymentFinishedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -23,7 +21,7 @@ import javax.persistence.Transient;
 @Entity
 @Getter @EqualsAndHashCode(of = "id")
 @Table(name = "payment")
-public class Payment extends AbstractAggregateRoot<Payment> {
+public class Payment {
 
     @Autowired @Transient
     ApplicationContext applicationContext;
