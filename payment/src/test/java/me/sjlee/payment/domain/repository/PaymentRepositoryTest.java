@@ -8,12 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class MoneyRepositoryTest {
+class PaymentRepositoryTest {
 
-    @Autowired private MoneyRepository moneyRepository;
+    @Autowired private PaymentRepository paymentRepository;
 
     @Test
     void 결제_저장_테스트() {
@@ -21,7 +20,7 @@ class MoneyRepositoryTest {
         Payment payment = new Payment(1L, new Money(100000), PayedBy.CREDIT_CARD);
 
         // when
-        Payment saved = moneyRepository.save(payment);
+        Payment saved = paymentRepository.save(payment);
 
         // then
         assertThat(saved.getId()).isNotNull();
