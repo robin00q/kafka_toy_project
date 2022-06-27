@@ -1,6 +1,5 @@
 package me.sjlee.order.infra.in.queue;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +26,11 @@ public class PaymentFinishedKafkaListener implements AcknowledgingMessageListene
         try {
             PaymentFinishedRecord record = objectMapper.readValue(data.value(), PaymentFinishedRecord.class);
             orderPaymentFinishedService.paymentFinished(record.getOrderId(), record.getAmount());
-        } catch (JsonProcessingException e) {
+
+            // 예외가 발생하지 않는다면, 수동커밋을 진행하여 읽은 메세지는 처리됐음을 보장한다.!
+            acknowledgment.acknowledge();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        acknowledgment.acknowledge();
     }
 }
