@@ -19,13 +19,16 @@ public class PaymentFinishedKafkaListener implements AcknowledgingMessageListene
     private final ObjectMapper objectMapper;
 
     @Override
-    @KafkaListener(topics = "payments", groupId = PaymentFinishedConsumerConfig.PAYMENTS_CONSUMER_GROUP)
+    @KafkaListener(topics = "payments",
+            groupId = PaymentFinishedConsumerConfig.PAYMENTS_CONSUMER_GROUP)
     public void onMessage(ConsumerRecord<String, String> data, Acknowledgment acknowledgment) {
         log.info("consume Record: {}", data.value());
 
         try {
-            PaymentFinishedRecord record = objectMapper.readValue(data.value(), PaymentFinishedRecord.class);
-            orderPaymentFinishedService.paymentFinished(record.getOrderId(), record.getAmount());
+            PaymentFinishedRecord record =
+                    objectMapper.readValue(data.value(), PaymentFinishedRecord.class);
+            orderPaymentFinishedService.paymentFinished(
+                    record.getOrderId(), record.getAmount());
 
             // 예외가 발생하지 않는다면, 수동커밋을 진행하여 읽은 메세지는 처리됐음을 보장한다.!
             acknowledgment.acknowledge();
