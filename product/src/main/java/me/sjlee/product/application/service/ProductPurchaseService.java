@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import me.sjlee.product.domain.exception.StockNotEnoughException;
 import me.sjlee.product.domain.models.SalesOption;
 import me.sjlee.product.domain.models.SalesProduct;
-import me.sjlee.product.domain.repository.OptionPurchaseHistoryRepository;
 import me.sjlee.product.domain.repository.OptionPurchaseManageRepository;
 import me.sjlee.product.domain.repository.SalesProductLoadRepository;
 import me.sjlee.product.domain.repository.SalesProductSaveRepository;
@@ -22,9 +21,7 @@ public class ProductPurchaseService {
     private final SalesProductLoadRepository salesProductLoadRepository;
     private final SalesProductSaveRepository salesProductSaveRepository;
     private final OptionPurchaseManageRepository optionPurchaseManageRepository;
-    private final OptionPurchaseHistoryRepository optionPurchaseHistoryRepository;
 
-    // TODO : 트랜잭션이 보장되는지 테스트해야함
     @Transactional
     public void purchase(Integer purchaseCount, Long salesProductId, Long salesOptionId) {
         SalesProduct salesProduct = salesProductLoadRepository.findById(salesProductId)
@@ -51,8 +48,6 @@ public class ProductPurchaseService {
         if (!optionPurchaseManageRepository.increasePurchaseCount(salesOption, purchaseCount)) {
             throw new StockNotEnoughException("재고가 부족합니다.");
         }
-        // TODO : History 객체를 전달하도록
-        optionPurchaseHistoryRepository.record(salesOption, purchaseCount);
     }
 
     private void decreasePurchaseCount(SalesOption salesOption, Integer purchaseCount) {

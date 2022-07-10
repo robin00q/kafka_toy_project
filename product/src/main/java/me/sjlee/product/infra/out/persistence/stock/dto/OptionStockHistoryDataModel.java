@@ -8,16 +8,19 @@ import me.sjlee.product.domain.models.SalesOption;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(indexes = {
+    @Index(name = "sales_option_id_idx", columnList = "sales_option_id")
+})
 public class OptionStockHistoryDataModel {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +30,6 @@ public class OptionStockHistoryDataModel {
     @Column(name = "sales_option_id", nullable = false)
     private Long salesOptionId;
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "purchase_status", nullable = false)
-    private OptionStockPurchaseStatus status;
-
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
@@ -38,10 +37,9 @@ public class OptionStockHistoryDataModel {
     private LocalDateTime createdAt;
 
     @Builder
-    public OptionStockHistoryDataModel(Long id, Long salesOptionId, OptionStockPurchaseStatus status, Integer quantity, LocalDateTime createdAt) {
+    public OptionStockHistoryDataModel(Long id, Long salesOptionId, Integer quantity, LocalDateTime createdAt) {
         this.id = id;
         this.salesOptionId = salesOptionId;
-        this.status = status;
         this.quantity = quantity;
         this.createdAt = createdAt;
     }
@@ -49,8 +47,15 @@ public class OptionStockHistoryDataModel {
     public static OptionStockHistoryDataModel increase(SalesOption option, Integer purchaseCount) {
         return OptionStockHistoryDataModel.builder()
                 .salesOptionId(option.getId())
-                .status(OptionStockPurchaseStatus.INCREASE)
                 .quantity(purchaseCount)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static OptionStockHistoryDataModel decrease(SalesOption option, Integer purchaseCount) {
+        return OptionStockHistoryDataModel.builder()
+                .salesOptionId(option.getId())
+                .quantity(purchaseCount * -1)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
