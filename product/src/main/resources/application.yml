@@ -31,8 +31,8 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3308/payment_db?serverTimezone=Asia/Seoul
-    username: payment_user
+    url: jdbc:mysql://localhost:3308/product_db?serverTimezone=Asia/Seoul
+    username: product_user
     password: 1234
 
   jpa:
