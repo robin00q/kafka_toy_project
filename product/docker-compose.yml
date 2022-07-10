@@ -1,0 +1,11 @@
+# redis-server.yml
+version: '3.7'
+services:
+  redis:
+    image: redis:6.2.2
+    command: redis-server
+    container_name: product-redis
+    ports:
+      - 6379:6379
+    volumes:
+      - /Users/we/Desktop/redis-temp-folder/data:/data

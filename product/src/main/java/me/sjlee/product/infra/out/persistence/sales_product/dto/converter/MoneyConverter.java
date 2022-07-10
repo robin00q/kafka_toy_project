@@ -1,4 +1,6 @@
-package me.sjlee.product.domain.models;
+package me.sjlee.product.infra.out.persistence.sales_product.dto.converter;
+
+import me.sjlee.product.domain.models.Money;
 
 import javax.persistence.AttributeConverter;
 

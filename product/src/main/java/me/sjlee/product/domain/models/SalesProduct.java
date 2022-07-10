@@ -1,40 +1,28 @@
 package me.sjlee.product.domain.models;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import java.util.List;
 
 @Getter
 @EqualsAndHashCode(of = "id")
 public class SalesProduct {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "sales_product_id")
     private Long id;
 
-    @Column(name = "sales_product_name")
     private String name;
 
-    @Column(name = "seller_id")
     private Long sellerId;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "sales_product_id")
     private List<SalesOption> salesOptions;
 
-    protected SalesProduct() {
-    }
-
-    public SalesProduct(String name, Long sellerId) {
+    @Builder
+    public SalesProduct(Long id, String name, Long sellerId, List<SalesOption> salesOptions) {
+        this.id = id;
         this.name = name;
         this.sellerId = sellerId;
+        this.salesOptions = salesOptions;
     }
 }

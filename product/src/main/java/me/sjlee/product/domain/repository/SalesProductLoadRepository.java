@@ -7,5 +7,4 @@ import java.util.Optional;
 public interface SalesProductLoadRepository {
 
     Optional<SalesProduct> findById(Long salesProductId);
-
 }
