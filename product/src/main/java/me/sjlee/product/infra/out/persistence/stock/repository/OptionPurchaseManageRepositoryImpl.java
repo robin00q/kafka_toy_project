@@ -16,15 +16,31 @@ public class OptionPurchaseManageRepositoryImpl implements OptionPurchaseManageR
 
     @Override
     public boolean increasePurchaseCount(SalesOption salesOption, int purchaseCount) {
-        String key = STOCK_KEY_PREFIX + salesOption.getId();
+        String key = createKey(salesOption);
         Long totalPurchaseCount = redisTemplate.opsForValue().increment(key, purchaseCount);
 
-        return totalPurchaseCount > salesOption.getTotalStock();
+        return totalPurchaseCount <= salesOption.getTotalStock();
     }
 
     @Override
-    public void decreasePurchaseCount(SalesOption salesOption, int purchaseCount) {
-        String key = STOCK_KEY_PREFIX + salesOption.getId();
-        redisTemplate.opsForValue().decrement(key, purchaseCount);
+    public boolean decreasePurchaseCount(SalesOption salesOption, int purchaseCount) {
+        String key = createKey(salesOption);
+        Long totalPurchaseCount = redisTemplate.opsForValue().decrement(key, purchaseCount);
+
+        return totalPurchaseCount >= 0;
+    }
+
+    @Override
+    public void initPurchaseCount(SalesOption salesOption) {
+        redisTemplate.opsForValue().set(createKey(salesOption), "0");
+    }
+
+    @Override
+    public int getCurrentPurchaseCount(SalesOption salesOption) {
+        return Integer.parseInt(redisTemplate.opsForValue().get(createKey(salesOption)));
+    }
+
+    private String createKey(SalesOption salesOption) {
+        return STOCK_KEY_PREFIX + salesOption.getId();
     }
 }

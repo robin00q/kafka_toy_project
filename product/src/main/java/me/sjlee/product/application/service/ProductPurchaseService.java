@@ -24,6 +24,7 @@ public class ProductPurchaseService {
     private final OptionPurchaseManageRepository optionPurchaseManageRepository;
     private final OptionPurchaseHistoryRepository optionPurchaseHistoryRepository;
 
+    // TODO : 트랜잭션이 보장되는지 테스트해야함
     @Transactional
     public void purchase(Integer purchaseCount, Long salesProductId, Long salesOptionId) {
         SalesProduct salesProduct = salesProductLoadRepository.findById(salesProductId)
@@ -35,8 +36,10 @@ public class ProductPurchaseService {
                 .orElseThrow(() -> new IllegalStateException("주문에 대한 옵션이 존재하지 않습니다."));
 
         try {
+            // 이 부분은 도메인 서비스로 가야할까?
             increasePurchaseCount(salesOption, purchaseCount);
         } catch (StockNotEnoughException e) {
+            // 이 부분은 도메인 서비스로 가야할까?
             salesOption.soldOut();
             salesProductSaveRepository.record(salesProduct);
             decreasePurchaseCount(salesOption, purchaseCount);
@@ -48,6 +51,7 @@ public class ProductPurchaseService {
         if (!optionPurchaseManageRepository.increasePurchaseCount(salesOption, purchaseCount)) {
             throw new StockNotEnoughException("재고가 부족합니다.");
         }
+        // TODO : History 객체를 전달하도록
         optionPurchaseHistoryRepository.record(salesOption, purchaseCount);
     }
 
