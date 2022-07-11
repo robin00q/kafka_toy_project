@@ -70,6 +70,14 @@ public class OptionPurchaseManageRepositoryImpl implements OptionPurchaseManageR
         }
     }
 
+    @Override
+    public boolean hasEnoughStock(SalesOption salesOption, int purchaseCount) {
+        int remainStock = salesOption.getTotalStock() -
+                Integer.parseInt(redisTemplate.opsForValue().get(createKey(salesOption)));
+
+        return remainStock < purchaseCount;
+    }
+
     private String createKey(SalesOption salesOption) {
         return STOCK_KEY_PREFIX + salesOption.getId();
     }

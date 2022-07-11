@@ -7,4 +7,5 @@ public interface OptionPurchaseManageRepository {
     boolean decreasePurchaseCount(SalesOption salesOption, int purchaseCount, long userId);
     void initPurchaseCount(SalesOption salesOption);
     long getCurrentPurchaseCount(SalesOption salesOption);
+    boolean hasEnoughStock(SalesOption salesOption, int purchaseCount);
 }
