@@ -33,4 +33,8 @@ public class SalesOption {
     public void soldOut() {
         this.status = SalesOptionStatus.SOLD_OUT;
     }
+
+    public boolean isSoldOut() {
+        return status == SalesOptionStatus.SOLD_OUT;
+    }
 }

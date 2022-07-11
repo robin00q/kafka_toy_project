@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @Table(indexes = {
     @Index(name = "sales_option_id_idx", columnList = "sales_option_id")
 })
-public class OptionStockHistoryDataModel {
+public class OptionPurchaseHistoryDataModel {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sales_option_stock_history_id")
@@ -29,6 +29,9 @@ public class OptionStockHistoryDataModel {
 
     @Column(name = "sales_option_id", nullable = false)
     private Long salesOptionId;
+
+    @Column(name = "order_id", nullable = false)
+    private Long orderId;
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
@@ -40,25 +43,28 @@ public class OptionStockHistoryDataModel {
     private LocalDateTime createdAt;
 
     @Builder
-    public OptionStockHistoryDataModel(Long salesOptionId, Long userId, Integer quantity, LocalDateTime createdAt) {
+    public OptionPurchaseHistoryDataModel(Long salesOptionId, Long orderId, Long userId, Integer quantity, LocalDateTime createdAt) {
         this.salesOptionId = salesOptionId;
+        this.orderId = orderId;
         this.userId = userId;
         this.quantity = quantity;
         this.createdAt = createdAt;
     }
 
-    public static OptionStockHistoryDataModel increase(SalesOption option, int purchaseCount, long userId) {
-        return OptionStockHistoryDataModel.builder()
+    public static OptionPurchaseHistoryDataModel increase(SalesOption option, int purchaseCount, long orderId, long userId) {
+        return OptionPurchaseHistoryDataModel.builder()
                 .salesOptionId(option.getId())
+                .orderId(orderId)
                 .userId(userId)
                 .quantity(purchaseCount)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
 
-    public static OptionStockHistoryDataModel decrease(SalesOption option, int purchaseCount, long userId) {
-        return OptionStockHistoryDataModel.builder()
+    public static OptionPurchaseHistoryDataModel decrease(SalesOption option, int purchaseCount, long orderId, long userId) {
+        return OptionPurchaseHistoryDataModel.builder()
                 .salesOptionId(option.getId())
+                .orderId(orderId)
                 .userId(userId)
                 .quantity(purchaseCount * -1)
                 .createdAt(LocalDateTime.now())

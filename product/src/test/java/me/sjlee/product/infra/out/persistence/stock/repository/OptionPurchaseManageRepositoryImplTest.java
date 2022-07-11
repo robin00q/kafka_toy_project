@@ -38,11 +38,12 @@ class OptionPurchaseManageRepositoryImplTest {
     @Test
     void 상품_구매_시_구매수량_증가() {
         // given
-        int purchaseCount = 1;
+        long orderId = 1;
         long userId = 1;
+        int purchaseCount = 1;
 
         // when
-        boolean result = optionPurchaseManageRepository.increasePurchaseCount(salesOption, purchaseCount, userId);
+        boolean result = optionPurchaseManageRepository.increasePurchaseCount(salesOption, purchaseCount, orderId, userId);
 
         // then
         assertThat(result).isTrue();
@@ -52,15 +53,16 @@ class OptionPurchaseManageRepositoryImplTest {
     @Test
     void 상품_구매수량_감소() {
         // given
+        long orderId = 1;
         long userId = 1;
         int increaseCount = 3;
         int decreaseCount = 1;
 
-        optionPurchaseManageRepository.increasePurchaseCount(salesOption, increaseCount, userId);
-        optionPurchaseManageRepository.increasePurchaseCount(salesOption, increaseCount, userId);
+        optionPurchaseManageRepository.increasePurchaseCount(salesOption, increaseCount, orderId, userId);
+        optionPurchaseManageRepository.increasePurchaseCount(salesOption, increaseCount, orderId, userId);
 
         // when
-        boolean result = optionPurchaseManageRepository.decreasePurchaseCount(salesOption, decreaseCount, userId);
+        boolean result = optionPurchaseManageRepository.decreasePurchaseCount(salesOption, decreaseCount, orderId, userId);
 
         // then
         assertThat(result).isTrue();

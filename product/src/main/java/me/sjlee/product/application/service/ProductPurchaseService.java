@@ -33,30 +33,30 @@ public class ProductPurchaseService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("주문에 대한 옵션이 존재하지 않습니다."));
 
-        if (optionPurchaseManageRepository.hasEnoughStock(salesOption, request.getPurchaseCount())) {
+        if (salesOption.isSoldOut()) {
             throw new StockNotEnoughException("재고가 부족합니다.");
         }
 
         try {
             // 이 부분은 도메인 서비스로 가야할까?
-            increasePurchaseCount(salesOption, request.getPurchaseCount(), request.getUserId());
+            increasePurchaseCount(salesOption, request.getPurchaseCount(), request.getOrderId(), request.getUserId());
         } catch (StockNotEnoughException e) {
             // 이 부분은 도메인 서비스로 가야할까?
             salesOption.soldOut();
             salesProductSaveRepository.record(salesProduct);
-            decreasePurchaseCount(salesOption, request.getPurchaseCount(), request.getUserId());
+            decreasePurchaseCount(salesOption, request.getPurchaseCount(), request.getOrderId(), request.getUserId());
             throw e;
         }
     }
 
-    private void increasePurchaseCount(SalesOption salesOption, int purchaseCount, long userId) {
-        if (!optionPurchaseManageRepository.increasePurchaseCount(salesOption, purchaseCount, userId)) {
+    private void increasePurchaseCount(SalesOption salesOption, int purchaseCount, long orderId, long userId) {
+        if (!optionPurchaseManageRepository.increasePurchaseCount(salesOption, purchaseCount, orderId, userId)) {
             throw new StockNotEnoughException("재고가 부족합니다.");
         }
     }
 
-    private void decreasePurchaseCount(SalesOption salesOption, int purchaseCount, long userId) {
-        optionPurchaseManageRepository.decreasePurchaseCount(salesOption, purchaseCount, userId);
+    private void decreasePurchaseCount(SalesOption salesOption, int purchaseCount, long orderId, long userId) {
+        optionPurchaseManageRepository.decreasePurchaseCount(salesOption, purchaseCount, orderId, userId);
     }
 
 }

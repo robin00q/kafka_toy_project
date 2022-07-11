@@ -12,9 +12,12 @@ public class ProductPurchaseRequest {
     @Min(1)
     private int purchaseCount;
     @Min(1)
+    private long orderId;
+    @Min(1)
     private long userId;
     @Min(1)
     private long salesProductId;
     @Min(1)
     private long salesOptionId;
+
 }

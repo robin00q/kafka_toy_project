@@ -20,8 +20,8 @@ public class OptionPurchaseManageRepositoryImpl implements OptionPurchaseManageR
 
     @Override
     @Transactional
-    public boolean increasePurchaseCount(SalesOption salesOption, int purchaseCount, long userId) {
-        optionPurchaseHistoryRepository.recordIncrease(salesOption, purchaseCount, userId);
+    public boolean increasePurchaseCount(SalesOption salesOption, int purchaseCount, long orderId, long userId) {
+        optionPurchaseHistoryRepository.recordIncrease(salesOption, purchaseCount, orderId, userId);
 
         String key = createKey(salesOption);
         Long totalPurchaseCount;
@@ -37,8 +37,8 @@ public class OptionPurchaseManageRepositoryImpl implements OptionPurchaseManageR
 
     @Override
     @Transactional
-    public boolean decreasePurchaseCount(SalesOption salesOption, int purchaseCount, long userId) {
-        optionPurchaseHistoryRepository.recordDecrease(salesOption, purchaseCount, userId);
+    public boolean decreasePurchaseCount(SalesOption salesOption, int purchaseCount, long orderId, long userId) {
+        optionPurchaseHistoryRepository.recordDecrease(salesOption, purchaseCount, orderId, userId);
 
         String key = createKey(salesOption);
         Long totalPurchaseCount;
