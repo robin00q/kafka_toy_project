@@ -13,13 +13,13 @@ public class OptionPurchaseHistoryRepositoryImpl implements OptionPurchaseHistor
     private final JpaOptionStockHistoryRepository jpaOptionStockHistoryRepository;
 
     @Override
-    public void recordIncrease(SalesOption salesOption, Integer purchaseCount) {
-        jpaOptionStockHistoryRepository.save(OptionStockHistoryDataModel.increase(salesOption, purchaseCount));
+    public void recordIncrease(SalesOption salesOption, int purchaseCount, long userId) {
+        jpaOptionStockHistoryRepository.save(OptionStockHistoryDataModel.increase(salesOption, purchaseCount, userId));
     }
 
     @Override
-    public void recordDecrease(SalesOption salesOption, Integer purchaseCount) {
-        jpaOptionStockHistoryRepository.save(OptionStockHistoryDataModel.decrease(salesOption, purchaseCount));
+    public void recordDecrease(SalesOption salesOption, int purchaseCount, long userId) {
+        jpaOptionStockHistoryRepository.save(OptionStockHistoryDataModel.decrease(salesOption, purchaseCount, userId));
     }
 
     @Override

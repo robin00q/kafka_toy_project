@@ -37,27 +37,34 @@ class OptionPurchaseManageRepositoryImplTest {
 
     @Test
     void 상품_구매_시_구매수량_증가() {
-        // given: none
+        // given
+        int purchaseCount = 1;
+        long userId = 1;
 
         // when
-        boolean result = optionPurchaseManageRepository.increasePurchaseCount(salesOption, 1);
+        boolean result = optionPurchaseManageRepository.increasePurchaseCount(salesOption, purchaseCount, userId);
 
         // then
         assertThat(result).isTrue();
-        assertThat(optionPurchaseManageRepository.getCurrentPurchaseCount(salesOption)).isEqualTo(1);
+        assertThat(optionPurchaseManageRepository.getCurrentPurchaseCount(salesOption)).isEqualTo(purchaseCount);
     }
 
     @Test
     void 상품_구매수량_감소() {
         // given
-        optionPurchaseManageRepository.increasePurchaseCount(salesOption, 3);
-        optionPurchaseManageRepository.increasePurchaseCount(salesOption, 3);
+        long userId = 1;
+        int increaseCount = 3;
+        int decreaseCount = 1;
+
+        optionPurchaseManageRepository.increasePurchaseCount(salesOption, increaseCount, userId);
+        optionPurchaseManageRepository.increasePurchaseCount(salesOption, increaseCount, userId);
 
         // when
-        boolean result = optionPurchaseManageRepository.decreasePurchaseCount(salesOption, 1);
+        boolean result = optionPurchaseManageRepository.decreasePurchaseCount(salesOption, decreaseCount, userId);
 
         // then
         assertThat(result).isTrue();
-        assertThat(optionPurchaseManageRepository.getCurrentPurchaseCount(salesOption)).isEqualTo(5);
+        assertThat(optionPurchaseManageRepository.getCurrentPurchaseCount(salesOption))
+                .isEqualTo(increaseCount * 2 - decreaseCount);
     }
 }

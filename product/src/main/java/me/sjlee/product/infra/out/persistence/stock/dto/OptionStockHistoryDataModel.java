@@ -30,6 +30,9 @@ public class OptionStockHistoryDataModel {
     @Column(name = "sales_option_id", nullable = false)
     private Long salesOptionId;
 
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
@@ -37,24 +40,26 @@ public class OptionStockHistoryDataModel {
     private LocalDateTime createdAt;
 
     @Builder
-    public OptionStockHistoryDataModel(Long id, Long salesOptionId, Integer quantity, LocalDateTime createdAt) {
-        this.id = id;
+    public OptionStockHistoryDataModel(Long salesOptionId, Long userId, Integer quantity, LocalDateTime createdAt) {
         this.salesOptionId = salesOptionId;
+        this.userId = userId;
         this.quantity = quantity;
         this.createdAt = createdAt;
     }
 
-    public static OptionStockHistoryDataModel increase(SalesOption option, Integer purchaseCount) {
+    public static OptionStockHistoryDataModel increase(SalesOption option, int purchaseCount, long userId) {
         return OptionStockHistoryDataModel.builder()
                 .salesOptionId(option.getId())
+                .userId(userId)
                 .quantity(purchaseCount)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
 
-    public static OptionStockHistoryDataModel decrease(SalesOption option, Integer purchaseCount) {
+    public static OptionStockHistoryDataModel decrease(SalesOption option, int purchaseCount, long userId) {
         return OptionStockHistoryDataModel.builder()
                 .salesOptionId(option.getId())
+                .userId(userId)
                 .quantity(purchaseCount * -1)
                 .createdAt(LocalDateTime.now())
                 .build();

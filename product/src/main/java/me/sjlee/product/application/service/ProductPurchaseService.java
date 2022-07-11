@@ -8,6 +8,8 @@ import me.sjlee.product.domain.models.SalesProduct;
 import me.sjlee.product.domain.repository.OptionPurchaseManageRepository;
 import me.sjlee.product.domain.repository.SalesProductLoadRepository;
 import me.sjlee.product.domain.repository.SalesProductSaveRepository;
+import me.sjlee.product.infra.in.controller.dto.ProductPurchaseRequest;
+import me.sjlee.product.infra.in.controller.dto.ProductPurchaseResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,34 +25,36 @@ public class ProductPurchaseService {
     private final OptionPurchaseManageRepository optionPurchaseManageRepository;
 
     @Transactional
-    public void purchase(Integer purchaseCount, Long salesProductId, Long salesOptionId) {
-        SalesProduct salesProduct = salesProductLoadRepository.findById(salesProductId)
+    public ProductPurchaseResponse purchase(ProductPurchaseRequest request) {
+        SalesProduct salesProduct = salesProductLoadRepository.findById(request.getSalesProductId())
                 .orElseThrow(() -> new IllegalArgumentException("주문아이디가 비어있습니다."));
 
         SalesOption salesOption = salesProduct.getSalesOptions().stream()
-                .filter(option -> Objects.equals(option.getId(), salesOptionId))
+                .filter(option -> Objects.equals(option.getId(), request.getSalesOptionId()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("주문에 대한 옵션이 존재하지 않습니다."));
 
         try {
             // 이 부분은 도메인 서비스로 가야할까?
-            increasePurchaseCount(salesOption, purchaseCount);
+            increasePurchaseCount(salesOption, request.getPurchaseCount(), request.getUserId());
         } catch (StockNotEnoughException e) {
             // 이 부분은 도메인 서비스로 가야할까?
             salesOption.soldOut();
             salesProductSaveRepository.record(salesProduct);
-            decreasePurchaseCount(salesOption, purchaseCount);
+            decreasePurchaseCount(salesOption, request.getPurchaseCount(), request.getUserId());
+            return ProductPurchaseResponse.fail();
         }
+
+        return ProductPurchaseResponse.success();
     }
 
-
-    private void increasePurchaseCount(SalesOption salesOption, Integer purchaseCount) {
-        if (!optionPurchaseManageRepository.increasePurchaseCount(salesOption, purchaseCount)) {
+    private void increasePurchaseCount(SalesOption salesOption, int purchaseCount, long userId) {
+        if (!optionPurchaseManageRepository.increasePurchaseCount(salesOption, purchaseCount, userId)) {
             throw new StockNotEnoughException("재고가 부족합니다.");
         }
     }
 
-    private void decreasePurchaseCount(SalesOption salesOption, Integer purchaseCount) {
-        optionPurchaseManageRepository.decreasePurchaseCount(salesOption, purchaseCount);
+    private void decreasePurchaseCount(SalesOption salesOption, int purchaseCount, long userId) {
+        optionPurchaseManageRepository.decreasePurchaseCount(salesOption, purchaseCount, userId);
     }
 }
