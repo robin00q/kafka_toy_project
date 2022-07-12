@@ -25,8 +25,4 @@ public class SalesProduct {
         this.sellerId = sellerId;
         this.salesOptions = salesOptions;
     }
-
-    public void hasOptionWithId(long optionId) {
-
-    }
 }

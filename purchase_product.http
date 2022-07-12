@@ -1,0 +1,9 @@
+### 상품등록 1
+POST http://localhost:8082/register/product
+Content-Type: application/json
+
+{
+  "name": "석준치킨",
+  "sellerId": 1
+}
+
