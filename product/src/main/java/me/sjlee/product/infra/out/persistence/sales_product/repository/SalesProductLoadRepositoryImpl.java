@@ -19,4 +19,13 @@ public class SalesProductLoadRepositoryImpl implements SalesProductLoadRepositor
         return productLoadRepository.findById(salesProductId)
                 .map(SalesProductDataModel::toEntity);
     }
+
+    @Override
+    public boolean hasProduct(long productId, long optionId) {
+        return productLoadRepository.findById(productId)
+                .map(product -> product.getSalesOptions()
+                .stream()
+                .anyMatch(e -> optionId == e.getId()))
+                .orElse(false);
+    }
 }

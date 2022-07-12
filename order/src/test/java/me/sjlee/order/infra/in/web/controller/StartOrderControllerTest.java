@@ -5,11 +5,13 @@ import me.sjlee.order.domain.models.Money;
 import me.sjlee.order.domain.models.Order;
 import me.sjlee.order.domain.models.OrderStatus;
 import me.sjlee.order.domain.repository.OrderRepository;
+import me.sjlee.order.service.api.ProductApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -21,6 +23,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -29,6 +33,7 @@ class StartOrderControllerTest {
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper mapper;
     @Autowired private OrderRepository orderRepository;
+    @MockBean private ProductApi productApi;
 
     StartOrderRequest.OrdererRequest ordererRequest;
     List<StartOrderRequest.OrderLineRequest> orderLineRequests;
@@ -39,8 +44,8 @@ class StartOrderControllerTest {
         ordererRequest = new StartOrderRequest.OrdererRequest(1L, "이석준");
 
         orderLineRequests = Arrays.asList(
-                new StartOrderRequest.OrderLineRequest(1L, 10000, 10),
-                new StartOrderRequest.OrderLineRequest(2L, 20000, 20)
+                new StartOrderRequest.OrderLineRequest(1L, 1L, 10000, 10),
+                new StartOrderRequest.OrderLineRequest(2L, 1L, 20000, 20)
         );
 
         shippingInfoRequest = new StartOrderRequest.ShippingInfoRequest(
@@ -53,6 +58,7 @@ class StartOrderControllerTest {
     @Test
     void 주문_시작_integration_test() throws Exception {
         // given
+        given(productApi.canPurchase(any())).willReturn(true);
         StartOrderRequest request = new StartOrderRequest(ordererRequest, orderLineRequests, shippingInfoRequest);
 
         // when

@@ -1,6 +1,6 @@
 package me.sjlee.order.infra.out.rest;
 
-import me.sjlee.order.service.UserApi;
+import me.sjlee.order.service.api.UserApi;
 import org.springframework.stereotype.Component;
 
 @Component

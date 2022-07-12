@@ -37,6 +37,7 @@ public class ProductPurchaseService {
             throw new StockNotEnoughException("재고가 부족합니다.");
         }
 
+        // DB 를 최우선적으로 생각할 것
         try {
             // 이 부분은 도메인 서비스로 가야할까?
             increasePurchaseCount(salesOption, request.getPurchaseCount(), request.getOrderId(), request.getUserId());

@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface SalesProductLoadRepository {
 
     Optional<SalesProduct> findById(Long salesProductId);
+
+    boolean hasProduct(long productId, long optionId);
 }

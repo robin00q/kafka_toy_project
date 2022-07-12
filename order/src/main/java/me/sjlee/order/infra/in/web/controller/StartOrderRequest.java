@@ -8,6 +8,7 @@ import me.sjlee.order.domain.models.OrderLine;
 import me.sjlee.order.domain.models.Orderer;
 import me.sjlee.order.domain.models.Receiver;
 import me.sjlee.order.domain.models.ShippingInfo;
+import me.sjlee.order.service.dto.ProductValidateDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class StartOrderRequest {
     public Order toOrder() {
         Orderer ordererDomain = new Orderer(orderer.userId, orderer.name);
         List<OrderLine> orderLinesDomain = orderLines.stream()
-                .map(e -> new OrderLine(e.getProductId(), e.getPrice(), e.getQuantity()))
+                .map(e -> new OrderLine(e.getProductId(), e.getOptionId(), e.getPrice(), e.getQuantity()))
                 .collect(Collectors.toList());
         ShippingInfo shippingInfoDomain = shippingInfo.toShippingInfo();
 
@@ -33,9 +34,9 @@ public class StartOrderRequest {
                 shippingInfoDomain);
     }
 
-    public List<Long> toProductIds() {
+    public List<ProductValidateDto> toProductValidateDto() {
         return orderLines.stream()
-                .map(e -> e.productId)
+                .map(e -> new ProductValidateDto(e.getProductId(), e.getOptionId(), e.getQuantity()))
                 .collect(Collectors.toList());
     }
 
@@ -54,6 +55,7 @@ public class StartOrderRequest {
     @AllArgsConstructor
     public static class OrderLineRequest {
         private Long productId;
+        private long optionId;
         private int price;
         private int quantity;
     }

@@ -10,7 +10,6 @@ import me.sjlee.order.domain.models.ShippingInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -36,8 +34,8 @@ class OrderRepositoryTest {
         orderer = new Orderer(1L, "이석준");
 
         orderLines = Arrays.asList(
-                new OrderLine(1L, 10000, 10),
-                new OrderLine(2L, 20000, 20)
+                new OrderLine(1L, 1L, 10000, 10),
+                new OrderLine(2L, 1L, 20000, 20)
         );
 
         shippingInfo = new ShippingInfo(

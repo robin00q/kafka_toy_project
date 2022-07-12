@@ -27,6 +27,9 @@ public class OrderLine {
     @Column(name = "product_id")
     private Long productId;
 
+    @Column(name = "option_id")
+    private Long optionId;
+
     @Convert(converter = MoneyConverter.class)
     @Column(name = "price")
     private Money price;
@@ -41,8 +44,9 @@ public class OrderLine {
     protected OrderLine() {
     }
 
-    public OrderLine(Long productId, int price, int quantity) {
+    public OrderLine(Long productId, Long optionId, int price, int quantity) {
         this.productId = productId;
+        this.optionId = optionId;
         this.price = new Money(price);
         this.quantity = quantity;
         this.amounts = new Money(price).multiply(quantity);
