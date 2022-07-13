@@ -1,4 +1,4 @@
-package me.sjlee.order.infra.in.web.controller;
+package me.sjlee.order.infra.in.web.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

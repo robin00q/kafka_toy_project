@@ -75,3 +75,15 @@ Content-Type: application/json
   "payedBy": "CREDIT_CARD"
 }
 
+### 주문 상태 확인
+GET http://localhost:8080/order/status?orderId=1
+Content-Type: application/json
+
+> {%
+client.test("Request executed successfully", function() {
+    client.assert(response.body === "PREPARE_SHIPPING");
+});
+%}
+
+### 감소된 재고 확인
+GET http://localhost:8082/product/stock?productId=1&optionId=1

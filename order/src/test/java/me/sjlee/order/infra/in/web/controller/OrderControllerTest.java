@@ -5,6 +5,7 @@ import me.sjlee.order.domain.models.Money;
 import me.sjlee.order.domain.models.Order;
 import me.sjlee.order.domain.models.OrderStatus;
 import me.sjlee.order.domain.repository.OrderRepository;
+import me.sjlee.order.infra.in.web.controller.dto.StartOrderRequest;
 import me.sjlee.order.service.api.ProductApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class StartOrderControllerTest {
+class OrderControllerTest {
 
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper mapper;
