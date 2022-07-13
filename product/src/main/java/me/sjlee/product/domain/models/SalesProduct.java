@@ -25,4 +25,8 @@ public class SalesProduct {
         this.sellerId = sellerId;
         this.salesOptions = salesOptions;
     }
+
+    public void addSalesOption(List<SalesOption> options) {
+        salesOptions.addAll(options);
+    }
 }

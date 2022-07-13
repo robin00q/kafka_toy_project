@@ -7,3 +7,71 @@ Content-Type: application/json
   "sellerId": 1
 }
 
+### 옵션등록
+POST http://localhost:8082/register/option
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "options": [
+    {
+      "name": "석준 후라이드치킨",
+      "totalStock": 10,
+      "price": 18000,
+      "discountRate": 0
+    },
+    {
+      "name": "석준 양념치킨",
+      "totalStock": 10,
+      "price": 19000,
+      "discountRate": 0
+    }
+  ]
+}
+
+### 상품주문
+POST http://localhost:8080/order/start
+Content-Type: application/json
+
+{
+  "orderer": {
+    "userId": 1,
+    "name": "김갑돌"
+  },
+  "orderLines": [
+    {
+      "productId": 1,
+      "optionId": 1,
+      "price": 18000,
+      "quantity": 10
+    },
+    {
+      "productId": 1,
+      "optionId": 2,
+      "price": 19000,
+      "quantity": 4
+    }
+  ],
+  "shippingInfo": {
+    "address": {
+      "address1": "경기도 용인시",
+      "address2": "901호",
+      "zipCode": "54321"
+    },
+    "receiver": {
+      "name": "김갑돌",
+      "phoneNumber": "010-2222-1111"
+    }
+  }
+}
+
+### 결제
+POST http://localhost:8081/pay/order
+Content-Type: application/json
+
+{
+  "orderId": 1,
+  "amounts": 256000,
+  "payedBy": "CREDIT_CARD"
+}
+
