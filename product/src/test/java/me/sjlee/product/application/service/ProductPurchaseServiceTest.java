@@ -6,92 +6,141 @@ import me.sjlee.product.domain.models.SalesOption;
 import me.sjlee.product.domain.models.SalesOptionStatus;
 import me.sjlee.product.domain.models.SalesProduct;
 import me.sjlee.product.domain.repository.OptionPurchaseManageRepository;
+import me.sjlee.product.domain.repository.SalesOptionLoadRepository;
 import me.sjlee.product.domain.repository.SalesProductSaveRepository;
-import me.sjlee.product.infra.in.controller.dto.ProductPurchaseRequest;
+import me.sjlee.product.infra.in.controller.dto.PurchaseRequest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest
+@Transactional
 class ProductPurchaseServiceTest {
 
     @Autowired
     private ProductPurchaseService productPurchaseService;
-
     @Autowired
     private SalesProductSaveRepository salesProductSaveRepository;
-
     @Autowired
     private OptionPurchaseManageRepository optionPurchaseManageRepository;
+    @Autowired
+    private SalesOptionLoadRepository optionLoadRepository;
 
-    private SalesProduct salesProduct;
+    private SalesProduct savedProduct;
 
     @BeforeEach
     void setUp() {
-        // 판매상품을 한개 등록한다.
-        SalesOption option = SalesOption.builder()
-                .name("맛있는 석준치킨")
+        SalesProduct salesProduct = SalesProduct.builder()
+                .name("석준치킨")
+                .sellerId(1L)
+                .build();
+
+        savedProduct = salesProductSaveRepository.record(salesProduct);
+
+        SalesOption option1 = SalesOption.builder()
+                .salesProductId(savedProduct.getId())
+                .name("석준치킨-10000원")
                 .totalStock(10)
                 .price(new Money(10000))
-                .discountRate(10)
+                .discountRate(0)
                 .status(SalesOptionStatus.ON_SALE)
                 .build();
 
-        SalesProduct product = SalesProduct.builder()
-                .name("판매상품")
-                .sellerId(1L)
-                .salesOptions(Collections.singletonList(option))
+        SalesOption option2 = SalesOption.builder()
+                .salesProductId(savedProduct.getId())
+                .name("석준치킨-20000원")
+                .totalStock(10)
+                .price(new Money(20000))
+                .discountRate(0)
+                .status(SalesOptionStatus.ON_SALE)
                 .build();
 
-        salesProduct = salesProductSaveRepository.record(product);
-        optionPurchaseManageRepository.initPurchaseCount(salesProduct.getSalesOptions().get(0));
+        savedProduct.addSalesOption(Arrays.asList(option1, option2));
+        savedProduct = salesProductSaveRepository.record(savedProduct);
     }
 
-    @DisplayName("구매 성공")
     @Test
-    void purchase() {
+    void 상품_재고_증가_성공() {
         // given
-        SalesOption option = salesProduct.getSalesOptions().get(0);
-        int purchaseCount = option.getTotalStock();
+        SalesOption firstOption = savedProduct.getSalesOptions().get(0);
+        SalesOption secondOption = savedProduct.getSalesOptions().get(1);
 
-        ProductPurchaseRequest productPurchaseRequest = ProductPurchaseRequest.builder()
-                .purchaseCount(purchaseCount)
-                .userId(10000)
-                .salesProductId(salesProduct.getId())
-                .salesOptionId(option.getId())
+        optionPurchaseManageRepository.initPurchaseCount(savedProduct.getId(), firstOption.getId());
+        optionPurchaseManageRepository.initPurchaseCount(savedProduct.getId(), secondOption.getId());
+
+        PurchaseRequest.PurchaseOptionRequest optionRequest1 = PurchaseRequest.PurchaseOptionRequest.builder()
+                .productId(savedProduct.getId())
+                .optionId(firstOption.getId())
+                .quantity(1)
+                .build();
+
+        PurchaseRequest.PurchaseOptionRequest optionRequest2 = PurchaseRequest.PurchaseOptionRequest.builder()
+                .productId(savedProduct.getId())
+                .optionId(secondOption.getId())
+                .quantity(2)
+                .build();
+
+        PurchaseRequest request = PurchaseRequest.builder()
+                .orderId(1L)
+                .userId(1L)
+                .purchaseOptionRequests(Arrays.asList(optionRequest1, optionRequest2))
                 .build();
 
         // when
-        productPurchaseService.purchase(productPurchaseRequest);
+        assertDoesNotThrow(() -> productPurchaseService.increaseStock(request));
 
         // then
-        assertThat(optionPurchaseManageRepository.getCurrentPurchaseCount(option)).isEqualTo(purchaseCount);
+        assertThat(optionPurchaseManageRepository.getCurrentPurchaseCount(savedProduct.getId(), firstOption.getId()))
+                .isEqualTo(optionRequest1.getQuantity());
+        assertThat(optionPurchaseManageRepository.getCurrentPurchaseCount(savedProduct.getId(), secondOption.getId()))
+                .isEqualTo(optionRequest2.getQuantity());
     }
 
-    @DisplayName("재고 부족으로 인한 구매 싪패")
     @Test
-    void purchase_fail() {
+    void 상품_재고_증가_실패() {
         // given
-        SalesOption option = salesProduct.getSalesOptions().get(0);
-        int purchaseCount = option.getTotalStock() + 10;
+        SalesOption firstOption = savedProduct.getSalesOptions().get(0);
+        SalesOption secondOption = savedProduct.getSalesOptions().get(1);
 
-        ProductPurchaseRequest productPurchaseRequest = ProductPurchaseRequest.builder()
-                .purchaseCount(purchaseCount)
-                .userId(10000)
-                .salesProductId(salesProduct.getId())
-                .salesOptionId(option.getId())
+        optionPurchaseManageRepository.initPurchaseCount(savedProduct.getId(), firstOption.getId());
+        optionPurchaseManageRepository.initPurchaseCount(savedProduct.getId(), secondOption.getId());
+
+        PurchaseRequest.PurchaseOptionRequest optionRequest1 = PurchaseRequest.PurchaseOptionRequest.builder()
+                .productId(savedProduct.getId())
+                .optionId(firstOption.getId())
+                .quantity(11) // 1번 옵션은 더 많은 상품을 구매한다.
                 .build();
 
-        // when, then
-        assertThatThrownBy(() -> productPurchaseService.purchase(productPurchaseRequest))
-                .isInstanceOf(StockNotEnoughException.class);
-    }
+        PurchaseRequest.PurchaseOptionRequest optionRequest2 = PurchaseRequest.PurchaseOptionRequest.builder()
+                .productId(savedProduct.getId())
+                .optionId(secondOption.getId())
+                .quantity(2)
+                .build();
 
+        PurchaseRequest request = PurchaseRequest.builder()
+                .orderId(1L)
+                .userId(1L)
+                .purchaseOptionRequests(Arrays.asList(optionRequest1, optionRequest2))
+                .build();
+
+        // when
+        assertThatThrownBy(() -> productPurchaseService.increaseStock(request))
+                .isInstanceOf(StockNotEnoughException.class);
+
+        // then
+        assertThat(optionPurchaseManageRepository.getCurrentPurchaseCount(savedProduct.getId(), firstOption.getId()))
+                .isEqualTo(0);
+        assertThat(optionPurchaseManageRepository.getCurrentPurchaseCount(savedProduct.getId(), secondOption.getId()))
+                .isEqualTo(0);
+        assertThat(optionLoadRepository.findOption(savedProduct.getId(), firstOption.getId()).get().isSoldOut()).isTrue();
+        assertThat(optionLoadRepository.findOption(savedProduct.getId(), secondOption.getId()).get().isSoldOut()).isFalse();
+    }
 }

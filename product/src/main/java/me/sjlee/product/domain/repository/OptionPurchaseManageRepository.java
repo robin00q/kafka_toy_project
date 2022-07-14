@@ -1,11 +1,10 @@
 package me.sjlee.product.domain.repository;
 
-import me.sjlee.product.domain.models.SalesOption;
+import me.sjlee.product.domain.models.SalesOptionPurchaseRecord;
 
 public interface OptionPurchaseManageRepository {
-    boolean increasePurchaseCount(SalesOption salesOption, int purchaseCount, long orderId, long userId);
-    boolean decreasePurchaseCount(SalesOption salesOption, int purchaseCount, long orderId, long userId);
-    void initPurchaseCount(SalesOption salesOption);
-    long getCurrentPurchaseCount(SalesOption salesOption);
-    boolean hasEnoughStock(SalesOption salesOption, int purchaseCount);
+    boolean increaseStock(SalesOptionPurchaseRecord record);
+    boolean decreaseStock(SalesOptionPurchaseRecord record);
+    long getCurrentPurchaseCount(long productId, long optionId);
+    void initPurchaseCount(long productId, long optionId);
 }

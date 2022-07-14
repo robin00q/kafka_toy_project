@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.sjlee.product.domain.models.SalesOption;
+import me.sjlee.product.domain.models.SalesOptionPurchaseRecord;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,6 +27,9 @@ public class OptionPurchaseHistoryDataModel {
     @Column(name = "sales_option_stock_history_id")
     private Long id;
 
+    @Column(name = "sales_product_id", nullable = false)
+    private Long salesProductId;
+
     @Column(name = "sales_option_id", nullable = false)
     private Long salesOptionId;
 
@@ -43,7 +46,8 @@ public class OptionPurchaseHistoryDataModel {
     private LocalDateTime createdAt;
 
     @Builder
-    public OptionPurchaseHistoryDataModel(Long salesOptionId, Long orderId, Long userId, Integer quantity, LocalDateTime createdAt) {
+    public OptionPurchaseHistoryDataModel(Long salesProductId, Long salesOptionId, Long orderId, Long userId, Integer quantity, LocalDateTime createdAt) {
+        this.salesProductId = salesProductId;
         this.salesOptionId = salesOptionId;
         this.orderId = orderId;
         this.userId = userId;
@@ -51,23 +55,25 @@ public class OptionPurchaseHistoryDataModel {
         this.createdAt = createdAt;
     }
 
-    public static OptionPurchaseHistoryDataModel increase(SalesOption option, int purchaseCount, long orderId, long userId) {
+    public static OptionPurchaseHistoryDataModel increase(SalesOptionPurchaseRecord record) {
         return OptionPurchaseHistoryDataModel.builder()
-                .salesOptionId(option.getId())
-                .orderId(orderId)
-                .userId(userId)
-                .quantity(purchaseCount)
-                .createdAt(LocalDateTime.now())
+                .salesProductId(record.getProductId())
+                .salesOptionId(record.getOptionId())
+                .orderId(record.getOrderId())
+                .userId(record.getUserId())
+                .quantity(record.getQuantity())
+                .createdAt(record.getCreatedAt())
                 .build();
     }
 
-    public static OptionPurchaseHistoryDataModel decrease(SalesOption option, int purchaseCount, long orderId, long userId) {
+    public static OptionPurchaseHistoryDataModel decrease(SalesOptionPurchaseRecord record) {
         return OptionPurchaseHistoryDataModel.builder()
-                .salesOptionId(option.getId())
-                .orderId(orderId)
-                .userId(userId)
-                .quantity(purchaseCount * -1)
-                .createdAt(LocalDateTime.now())
+                .salesProductId(record.getProductId())
+                .salesOptionId(record.getOptionId())
+                .orderId(record.getOrderId())
+                .userId(record.getUserId())
+                .quantity(record.getQuantity() * -1)
+                .createdAt(record.getCreatedAt())
                 .build();
     }
 }

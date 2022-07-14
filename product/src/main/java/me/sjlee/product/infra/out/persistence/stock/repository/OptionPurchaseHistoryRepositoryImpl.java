@@ -1,7 +1,6 @@
 package me.sjlee.product.infra.out.persistence.stock.repository;
 
 import lombok.RequiredArgsConstructor;
-import me.sjlee.product.domain.models.SalesOption;
 import me.sjlee.product.domain.repository.OptionPurchaseHistoryRepository;
 import me.sjlee.product.infra.out.persistence.stock.dto.OptionPurchaseHistoryDataModel;
 import org.springframework.stereotype.Repository;
@@ -13,17 +12,12 @@ public class OptionPurchaseHistoryRepositoryImpl implements OptionPurchaseHistor
     private final JpaOptionPurchaseHistoryRepository jpaOptionPurchaseHistoryRepository;
 
     @Override
-    public void recordIncrease(SalesOption salesOption, int purchaseCount, long orderId, long userId) {
-        jpaOptionPurchaseHistoryRepository.save(OptionPurchaseHistoryDataModel.increase(salesOption, purchaseCount, orderId, userId));
+    public long getPurchaseCount(long productId, long optionId) {
+        return jpaOptionPurchaseHistoryRepository.countBySalesOptionId(productId, optionId);
     }
 
     @Override
-    public void recordDecrease(SalesOption salesOption, int purchaseCount, long orderId, long userId) {
-        jpaOptionPurchaseHistoryRepository.save(OptionPurchaseHistoryDataModel.decrease(salesOption, purchaseCount, orderId, userId));
-    }
-
-    @Override
-    public long getPurchaseCount(SalesOption salesOption) {
-        return jpaOptionPurchaseHistoryRepository.countBySalesOptionId(salesOption.getId());
+    public OptionPurchaseHistoryDataModel save(OptionPurchaseHistoryDataModel optionPurchaseHistory) {
+        return jpaOptionPurchaseHistoryRepository.save(optionPurchaseHistory);
     }
 }

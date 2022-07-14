@@ -51,7 +51,7 @@ public class SalesProductDataModel {
 
     public static SalesProductDataModel from(SalesProduct salesProduct) {
         List<SalesOptionDataModel> optionDataModels = salesProduct.getSalesOptions().stream()
-                .map(option -> SalesOptionDataModel.from(option, salesProduct.getId()))
+                .map(SalesOptionDataModel::from)
                 .collect(Collectors.toList());
 
         return SalesProductDataModel.builder()

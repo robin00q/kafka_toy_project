@@ -1,9 +1,10 @@
 package me.sjlee.product.infra.out.persistence.stock.repository;
 
 import lombok.RequiredArgsConstructor;
-import me.sjlee.product.domain.models.SalesOption;
+import me.sjlee.product.domain.models.SalesOptionPurchaseRecord;
 import me.sjlee.product.domain.repository.OptionPurchaseHistoryRepository;
 import me.sjlee.product.domain.repository.OptionPurchaseManageRepository;
+import me.sjlee.product.infra.out.persistence.stock.dto.OptionPurchaseHistoryDataModel;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -20,65 +21,61 @@ public class OptionPurchaseManageRepositoryImpl implements OptionPurchaseManageR
 
     @Override
     @Transactional
-    public boolean increasePurchaseCount(SalesOption salesOption, int purchaseCount, long orderId, long userId) {
-        optionPurchaseHistoryRepository.recordIncrease(salesOption, purchaseCount, orderId, userId);
+    public boolean increaseStock(SalesOptionPurchaseRecord record) {
+        optionPurchaseHistoryRepository.save(OptionPurchaseHistoryDataModel.increase(record));
 
-        String key = createKey(salesOption);
+        String key = createKey(record.getProductId(), record.getOptionId());
         Long totalPurchaseCount;
 
         try {
-            totalPurchaseCount = redisTemplate.opsForValue().increment(key, purchaseCount);
+            totalPurchaseCount = redisTemplate.opsForValue().increment(key, record.getQuantity());
         } catch (RedisConnectionFailureException e) {
-            totalPurchaseCount = optionPurchaseHistoryRepository.getPurchaseCount(salesOption) + purchaseCount;
+            totalPurchaseCount = optionPurchaseHistoryRepository.getPurchaseCount(record.getProductId(), record.getOptionId());
         }
 
-        return totalPurchaseCount <= salesOption.getTotalStock();
+        return totalPurchaseCount <= record.getTotalStock();
     }
 
     @Override
     @Transactional
-    public boolean decreasePurchaseCount(SalesOption salesOption, int purchaseCount, long orderId, long userId) {
-        optionPurchaseHistoryRepository.recordDecrease(salesOption, purchaseCount, orderId, userId);
+    public boolean decreaseStock(SalesOptionPurchaseRecord record) {
+        optionPurchaseHistoryRepository.save(OptionPurchaseHistoryDataModel.decrease(record));
 
-        String key = createKey(salesOption);
+        String key = createKey(record.getProductId(), record.getOptionId());
         Long totalPurchaseCount;
 
         try  {
-            totalPurchaseCount = redisTemplate.opsForValue().decrement(key, purchaseCount);
+            totalPurchaseCount = redisTemplate.opsForValue().decrement(key, record.getQuantity());
         } catch (RedisConnectionFailureException e) {
-            totalPurchaseCount = optionPurchaseHistoryRepository.getPurchaseCount(salesOption) - purchaseCount;
+            totalPurchaseCount = optionPurchaseHistoryRepository.getPurchaseCount(record.getProductId(), record.getOptionId());
         }
 
         return totalPurchaseCount >= 0;
     }
 
     @Override
-    public void initPurchaseCount(SalesOption salesOption) {
+    public long getCurrentPurchaseCount(long productId, long optionId) {
+        String key = createKey(productId, optionId);
+
         try {
-            redisTemplate.opsForValue().set(createKey(salesOption), "0");
+            return Long.parseLong(redisTemplate.opsForValue().get(key));
+        } catch (RedisConnectionFailureException e) {
+            return optionPurchaseHistoryRepository.getPurchaseCount(productId, optionId);
+        }
+    }
+
+    @Override
+    public void initPurchaseCount(long productId, long optionId) {
+        String key = createKey(productId, optionId);
+
+        try {
+            redisTemplate.opsForValue().set(key, "0");
         } catch (RedisConnectionFailureException e) {
             return;
         }
     }
 
-    @Override
-    public long getCurrentPurchaseCount(SalesOption salesOption) {
-        try {
-            return Long.parseLong(redisTemplate.opsForValue().get(createKey(salesOption)));
-        } catch (RedisConnectionFailureException e) {
-            return optionPurchaseHistoryRepository.getPurchaseCount(salesOption);
-        }
-    }
-
-    @Override
-    public boolean hasEnoughStock(SalesOption salesOption, int purchaseCount) {
-        int remainStock = salesOption.getTotalStock() -
-                Integer.parseInt(redisTemplate.opsForValue().get(createKey(salesOption)));
-
-        return remainStock < purchaseCount;
-    }
-
-    private String createKey(SalesOption salesOption) {
-        return STOCK_KEY_PREFIX + salesOption.getId();
+    private String createKey(long productId, long optionId) {
+        return STOCK_KEY_PREFIX + productId + ":" + optionId;
     }
 }

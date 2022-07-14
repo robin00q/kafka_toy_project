@@ -8,7 +8,8 @@ public interface JpaOptionPurchaseHistoryRepository extends JpaRepository<Option
 
     @Query("select sum(his.quantity) " +
             "from OptionPurchaseHistoryDataModel his " +
-            "where his.salesOptionId = ?1 " +
+            "where  his.salesProductId = ?1 " +
+            "and his.salesOptionId = ?2 " +
             "group by his.salesOptionId")
-    long countBySalesOptionId(Long salesOptionId);
+    long countBySalesOptionId(Long productId, Long optionId);
 }

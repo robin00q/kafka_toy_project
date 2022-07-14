@@ -1,9 +1,9 @@
 package me.sjlee.product.domain.repository;
 
-import me.sjlee.product.domain.models.SalesOption;
+import me.sjlee.product.infra.out.persistence.stock.dto.OptionPurchaseHistoryDataModel;
 
 public interface OptionPurchaseHistoryRepository {
-    void recordIncrease(SalesOption salesOption, int purchaseCount, long orderId, long userId);
-    void recordDecrease(SalesOption salesOption, int purchaseCount, long orderId, long userId);
-    long getPurchaseCount(SalesOption salesOption);
+
+    long getPurchaseCount(long productId, long optionId);
+    OptionPurchaseHistoryDataModel save(OptionPurchaseHistoryDataModel optionPurchaseHistory);
 }

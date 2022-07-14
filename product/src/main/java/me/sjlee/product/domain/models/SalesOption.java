@@ -10,6 +10,8 @@ public class SalesOption {
 
     private Long id;
 
+    private Long salesProductId;
+
     private String name;
 
     private Integer totalStock;
@@ -21,8 +23,9 @@ public class SalesOption {
     private SalesOptionStatus status;
 
     @Builder
-    public SalesOption(Long id, String name, Integer totalStock, Money price, Integer discountRate, SalesOptionStatus status) {
+    public SalesOption(Long id, Long salesProductId, String name, Integer totalStock, Money price, Integer discountRate, SalesOptionStatus status) {
         this.id = id;
+        this.salesProductId = salesProductId;
         this.name = name;
         this.totalStock = totalStock;
         this.price = price;

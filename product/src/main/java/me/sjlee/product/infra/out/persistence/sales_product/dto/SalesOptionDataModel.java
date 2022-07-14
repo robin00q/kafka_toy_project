@@ -61,10 +61,10 @@ public class SalesOptionDataModel {
         this.status = status;
     }
 
-    public static SalesOptionDataModel from(SalesOption salesOption, Long salesProductId) {
+    public static SalesOptionDataModel from(SalesOption salesOption) {
         return SalesOptionDataModel.builder()
                 .id(salesOption.getId())
-                .salesProductId(salesProductId)
+                .salesProductId(salesOption.getSalesProductId())
                 .name(salesOption.getName())
                 .totalStock(salesOption.getTotalStock())
                 .price(salesOption.getPrice())
@@ -76,6 +76,7 @@ public class SalesOptionDataModel {
     public SalesOption toEntity() {
         return SalesOption.builder()
                 .id(id)
+                .salesProductId(salesProductId)
                 .name(name)
                 .totalStock(totalStock)
                 .price(price)

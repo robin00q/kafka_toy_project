@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -23,7 +24,7 @@ public class SalesProduct {
         this.id = id;
         this.name = name;
         this.sellerId = sellerId;
-        this.salesOptions = salesOptions;
+        this.salesOptions = salesOptions == null ? new ArrayList<>() : salesOptions;
     }
 
     public void addSalesOption(List<SalesOption> options) {
