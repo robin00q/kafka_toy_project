@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.sjlee.order.domain.models.Order;
 import me.sjlee.order.domain.models.OrderStatus;
 import me.sjlee.order.domain.repository.OrderRepository;
+import me.sjlee.order.infra.in.web.controller.dto.OrderDetailResponse;
 import me.sjlee.order.infra.in.web.controller.dto.StartOrderRequest;
 import me.sjlee.order.service.api.ProductApi;
 import me.sjlee.order.service.api.UserApi;
@@ -23,6 +24,13 @@ public class OrderService {
         Order saved = orderRepository.save(startOrderRequest.toOrder());
 
         return saved.getId();
+    }
+
+    public OrderDetailResponse getOrderDetail(long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 주문입니다."));
+
+        return OrderDetailResponse.from(order);
     }
 
     private void validateRequest(StartOrderRequest startOrderRequest) {

@@ -2,6 +2,7 @@ package me.sjlee.order.infra.in.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import me.sjlee.order.domain.models.OrderStatus;
+import me.sjlee.order.infra.in.web.controller.dto.OrderDetailResponse;
 import me.sjlee.order.infra.in.web.controller.dto.StartOrderRequest;
 import me.sjlee.order.service.OrderService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,11 @@ public class OrderController {
     @PostMapping("/order/start")
     public Long startOrder(@RequestBody StartOrderRequest startOrderRequest) {
         return orderService.startOrder(startOrderRequest);
+    }
+
+    @GetMapping("/order/detail")
+    public OrderDetailResponse getOrderDetail(@RequestParam long orderId) {
+        return orderService.getOrderDetail(orderId);
     }
 
     @GetMapping("/order/status")
