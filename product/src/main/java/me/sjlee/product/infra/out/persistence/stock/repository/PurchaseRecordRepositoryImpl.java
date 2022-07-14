@@ -1,13 +1,13 @@
 package me.sjlee.product.infra.out.persistence.stock.repository;
 
 import lombok.RequiredArgsConstructor;
-import me.sjlee.product.domain.repository.OptionPurchaseHistoryRepository;
+import me.sjlee.product.domain.repository.PurchaseRecordRepository;
 import me.sjlee.product.infra.out.persistence.stock.dto.OptionPurchaseHistoryDataModel;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class OptionPurchaseHistoryRepositoryImpl implements OptionPurchaseHistoryRepository {
+public class PurchaseRecordRepositoryImpl implements PurchaseRecordRepository {
 
     private final JpaOptionPurchaseHistoryRepository jpaOptionPurchaseHistoryRepository;
 

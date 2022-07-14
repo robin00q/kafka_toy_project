@@ -2,8 +2,8 @@ package me.sjlee.product.infra.out.persistence.stock.repository;
 
 import lombok.RequiredArgsConstructor;
 import me.sjlee.product.domain.models.SalesOptionPurchaseRecord;
-import me.sjlee.product.domain.repository.OptionPurchaseHistoryRepository;
-import me.sjlee.product.domain.repository.OptionPurchaseManageRepository;
+import me.sjlee.product.domain.repository.PurchaseManageRepository;
+import me.sjlee.product.domain.repository.PurchaseRecordRepository;
 import me.sjlee.product.infra.out.persistence.stock.dto.OptionPurchaseHistoryDataModel;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -12,17 +12,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
-public class OptionPurchaseManageRepositoryImpl implements OptionPurchaseManageRepository {
+public class PurchaseManageRepositoryImpl implements PurchaseManageRepository {
 
     private static final String STOCK_KEY_PREFIX = "option:purchase:";
 
     private final RedisTemplate<String, String> redisTemplate;
-    private final OptionPurchaseHistoryRepository optionPurchaseHistoryRepository;
+    private final PurchaseRecordRepository purchaseRecordRepository;
 
     @Override
     @Transactional
     public boolean increaseStock(SalesOptionPurchaseRecord record) {
-        optionPurchaseHistoryRepository.save(OptionPurchaseHistoryDataModel.increase(record));
+        purchaseRecordRepository.save(OptionPurchaseHistoryDataModel.increase(record));
 
         String key = createKey(record.getProductId(), record.getOptionId());
         Long totalPurchaseCount;
@@ -30,7 +30,7 @@ public class OptionPurchaseManageRepositoryImpl implements OptionPurchaseManageR
         try {
             totalPurchaseCount = redisTemplate.opsForValue().increment(key, record.getQuantity());
         } catch (RedisConnectionFailureException e) {
-            totalPurchaseCount = optionPurchaseHistoryRepository.getPurchaseCount(record.getProductId(), record.getOptionId());
+            totalPurchaseCount = purchaseRecordRepository.getPurchaseCount(record.getProductId(), record.getOptionId());
         }
 
         return totalPurchaseCount <= record.getTotalStock();
@@ -39,7 +39,7 @@ public class OptionPurchaseManageRepositoryImpl implements OptionPurchaseManageR
     @Override
     @Transactional
     public boolean decreaseStock(SalesOptionPurchaseRecord record) {
-        optionPurchaseHistoryRepository.save(OptionPurchaseHistoryDataModel.decrease(record));
+        purchaseRecordRepository.save(OptionPurchaseHistoryDataModel.decrease(record));
 
         String key = createKey(record.getProductId(), record.getOptionId());
         Long totalPurchaseCount;
@@ -47,7 +47,7 @@ public class OptionPurchaseManageRepositoryImpl implements OptionPurchaseManageR
         try  {
             totalPurchaseCount = redisTemplate.opsForValue().decrement(key, record.getQuantity());
         } catch (RedisConnectionFailureException e) {
-            totalPurchaseCount = optionPurchaseHistoryRepository.getPurchaseCount(record.getProductId(), record.getOptionId());
+            totalPurchaseCount = purchaseRecordRepository.getPurchaseCount(record.getProductId(), record.getOptionId());
         }
 
         return totalPurchaseCount >= 0;
@@ -60,7 +60,7 @@ public class OptionPurchaseManageRepositoryImpl implements OptionPurchaseManageR
         try {
             return Long.parseLong(redisTemplate.opsForValue().get(key));
         } catch (RedisConnectionFailureException e) {
-            return optionPurchaseHistoryRepository.getPurchaseCount(productId, optionId);
+            return purchaseRecordRepository.getPurchaseCount(productId, optionId);
         }
     }
 

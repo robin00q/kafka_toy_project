@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
-public class ProductRegisterService {
+public class ProoductManageService {
 
     private final SalesProductSaveRepository salesProductSaveRepository;
 

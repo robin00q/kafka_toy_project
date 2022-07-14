@@ -2,7 +2,7 @@ package me.sjlee.product.infra.out.persistence.stock.repository;
 
 import me.sjlee.product.domain.models.PurchaseRecordStatus;
 import me.sjlee.product.domain.models.SalesOptionPurchaseRecord;
-import me.sjlee.product.domain.repository.OptionPurchaseManageRepository;
+import me.sjlee.product.domain.repository.PurchaseManageRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PurchaseOptionRequestPurchaseManageRepositoryImplTest {
 
     @Autowired
-    private OptionPurchaseManageRepository optionPurchaseManageRepository;
+    private PurchaseManageRepository purchaseManageRepository;
 
     @Test
     void 구매수량_증가() {
@@ -25,7 +25,7 @@ class PurchaseOptionRequestPurchaseManageRepositoryImplTest {
         long productId = 1;
         long optionId = 1;
 
-        optionPurchaseManageRepository.initPurchaseCount(productId, optionId);
+        purchaseManageRepository.initPurchaseCount(productId, optionId);
 
         SalesOptionPurchaseRecord record = SalesOptionPurchaseRecord.builder()
                 .productId(productId)
@@ -40,11 +40,11 @@ class PurchaseOptionRequestPurchaseManageRepositoryImplTest {
 
 
         // when
-        boolean result = optionPurchaseManageRepository.increaseStock(record);
+        boolean result = purchaseManageRepository.increaseStock(record);
 
         // then
         assertThat(result).isTrue();
-        assertThat(optionPurchaseManageRepository.getCurrentPurchaseCount(record.getProductId(), record.getOptionId())).isEqualTo(quantity);
+        assertThat(purchaseManageRepository.getCurrentPurchaseCount(record.getProductId(), record.getOptionId())).isEqualTo(quantity);
     }
 
     @Test
@@ -55,7 +55,7 @@ class PurchaseOptionRequestPurchaseManageRepositoryImplTest {
         long productId = 1;
         long optionId = 1;
 
-        optionPurchaseManageRepository.initPurchaseCount(productId, optionId);
+        purchaseManageRepository.initPurchaseCount(productId, optionId);
 
         SalesOptionPurchaseRecord record = SalesOptionPurchaseRecord.builder()
                 .productId(productId)
@@ -69,11 +69,11 @@ class PurchaseOptionRequestPurchaseManageRepositoryImplTest {
                 .build();
 
         // when
-        boolean result = optionPurchaseManageRepository.increaseStock(record);
+        boolean result = purchaseManageRepository.increaseStock(record);
 
         // then
         assertThat(result).isFalse();
-        assertThat(optionPurchaseManageRepository.getCurrentPurchaseCount(record.getProductId(), record.getOptionId())).isEqualTo(quantity);
+        assertThat(purchaseManageRepository.getCurrentPurchaseCount(record.getProductId(), record.getOptionId())).isEqualTo(quantity);
     }
 
     @Test
@@ -84,7 +84,7 @@ class PurchaseOptionRequestPurchaseManageRepositoryImplTest {
         long productId = 1;
         long optionId = 1;
 
-        optionPurchaseManageRepository.initPurchaseCount(productId, optionId);
+        purchaseManageRepository.initPurchaseCount(productId, optionId);
 
         SalesOptionPurchaseRecord record = SalesOptionPurchaseRecord.builder()
                 .productId(productId)
@@ -97,15 +97,15 @@ class PurchaseOptionRequestPurchaseManageRepositoryImplTest {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        optionPurchaseManageRepository.increaseStock(record);
-        optionPurchaseManageRepository.increaseStock(record);
+        purchaseManageRepository.increaseStock(record);
+        purchaseManageRepository.increaseStock(record);
 
         // when
-        boolean result = optionPurchaseManageRepository.decreaseStock(record);
+        boolean result = purchaseManageRepository.decreaseStock(record);
 
         // then
         assertThat(result).isTrue();
-        assertThat(optionPurchaseManageRepository.getCurrentPurchaseCount(record.getProductId(), record.getOptionId())).isEqualTo(1);
+        assertThat(purchaseManageRepository.getCurrentPurchaseCount(record.getProductId(), record.getOptionId())).isEqualTo(1);
     }
 
 

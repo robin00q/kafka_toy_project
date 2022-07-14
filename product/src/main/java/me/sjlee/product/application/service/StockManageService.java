@@ -8,7 +8,7 @@ import me.sjlee.product.domain.exception.StockNotEnoughException;
 import me.sjlee.product.domain.models.PurchaseRecordStatus;
 import me.sjlee.product.domain.models.SalesOption;
 import me.sjlee.product.domain.models.SalesOptionPurchaseRecord;
-import me.sjlee.product.domain.repository.OptionPurchaseManageRepository;
+import me.sjlee.product.domain.repository.PurchaseManageRepository;
 import me.sjlee.product.domain.repository.SalesOptionLoadRepository;
 import me.sjlee.product.domain.repository.SalesOptionSaveRepository;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class StockManageService {
 
     private final SalesOptionLoadRepository salesOptionLoadRepository;
     private final SalesOptionSaveRepository salesOptionSaveRepository;
-    private final OptionPurchaseManageRepository optionPurchaseManageRepository;
+    private final PurchaseManageRepository purchaseManageRepository;
     private final OrderClient orderClient;
 
     @Transactional
@@ -81,7 +81,7 @@ public class StockManageService {
         boolean stockNotEnough = false;
 
         for (SalesOptionPurchaseRecord record : records) {
-            if (!optionPurchaseManageRepository.increaseStock(record)) {
+            if (!purchaseManageRepository.increaseStock(record)) {
                 stockNotEnough = true;
                 salesOptionSaveRepository.updateSoldOut(record.getOptionId());
             }
@@ -91,13 +91,13 @@ public class StockManageService {
     }
 
     private void decreaseStock(List<SalesOptionPurchaseRecord> records) {
-        records.forEach(optionPurchaseManageRepository::decreaseStock);
+        records.forEach(purchaseManageRepository::decreaseStock);
     }
 
     public long getRemainStock(long productId, long optionId) {
         SalesOption salesOption = salesOptionLoadRepository.findOption(productId, optionId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 상품입니다."));
 
-        return salesOption.getTotalStock() - optionPurchaseManageRepository.getCurrentPurchaseCount(productId, optionId);
+        return salesOption.getTotalStock() - purchaseManageRepository.getCurrentPurchaseCount(productId, optionId);
     }
 }

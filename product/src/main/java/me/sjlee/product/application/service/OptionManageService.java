@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class OptionRegisterService {
+public class OptionManageService {
 
     private final SalesProductLoadRepository salesProductLoadRepository;
     private final SalesProductSaveRepository salesProductSaveRepository;
