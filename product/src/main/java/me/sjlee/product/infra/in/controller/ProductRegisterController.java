@@ -19,5 +19,4 @@ public class ProductRegisterController {
         return new ProductRegisterResponse(productRegisterService.register(request));
     }
 
-
 }

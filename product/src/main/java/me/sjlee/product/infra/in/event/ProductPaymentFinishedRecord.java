@@ -1,9 +1,9 @@
-package me.sjlee.order.infra.in.queue;
+package me.sjlee.product.infra.in.event;
 
 import lombok.Getter;
 
 @Getter
-public class PaymentFinishedRecord {
+public class ProductPaymentFinishedRecord {
 
     private long orderId;
     private Integer amount;

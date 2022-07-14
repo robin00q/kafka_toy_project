@@ -85,5 +85,11 @@ client.test("Request executed successfully", function() {
 });
 %}
 
-### 감소된 재고 확인
-GET http://localhost:8082/product/stock?productId=1&optionId=1
+### 주문 상세 확인
+GET http://localhost:8080/order/detail?orderId=1
+
+### 재고 확인 1
+GET http://localhost:8082/stock?productId=1&optionId=1
+
+### 재고 확인 2
+GET http://localhost:8082/stock?productId=1&optionId=2

@@ -11,7 +11,6 @@ import me.sjlee.product.domain.models.SalesOptionPurchaseRecord;
 import me.sjlee.product.domain.repository.OptionPurchaseManageRepository;
 import me.sjlee.product.domain.repository.SalesOptionLoadRepository;
 import me.sjlee.product.domain.repository.SalesOptionSaveRepository;
-import me.sjlee.product.infra.in.controller.dto.IncreaseStockRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +21,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ProductPurchaseService {
+public class StockManageService {
 
     private final SalesOptionLoadRepository salesOptionLoadRepository;
     private final SalesOptionSaveRepository salesOptionSaveRepository;
@@ -30,8 +29,8 @@ public class ProductPurchaseService {
     private final OrderClient orderClient;
 
     @Transactional
-    public void increaseStock(IncreaseStockRequest request) {
-        OrderDetail orderDetail = orderClient.getOrderDetail(request.getOrderId());
+    public void increaseStock(long orderId) {
+        OrderDetail orderDetail = orderClient.getOrderDetail(orderId);
 
         List<SalesOptionPurchaseRecord> records = toPurchaseRecords(orderDetail);
 
@@ -46,7 +45,8 @@ public class ProductPurchaseService {
         List<SalesOptionPurchaseRecord> purchaseRecords = new ArrayList<>();
 
         for (OrderDetail.OrderLineDetail orderLine : order.getOrderLines()) {
-            SalesOption salesOption = salesOptionLoadRepository.findOption(orderLine.getProductId(), orderLine.getOptionId())
+            SalesOption salesOption = salesOptionLoadRepository.findOption(
+                    orderLine.getProductId(), orderLine.getOptionId())
                             .orElseThrow(() -> new IllegalStateException("존재하지 않는 옵션입니다."));
 
             if (salesOption.isSoldOut()) {
@@ -94,4 +94,10 @@ public class ProductPurchaseService {
         records.forEach(optionPurchaseManageRepository::decreaseStock);
     }
 
+    public long getRemainStock(long productId, long optionId) {
+        SalesOption salesOption = salesOptionLoadRepository.findOption(productId, optionId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 상품입니다."));
+
+        return salesOption.getTotalStock() - optionPurchaseManageRepository.getCurrentPurchaseCount(productId, optionId);
+    }
 }

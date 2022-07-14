@@ -1,4 +1,4 @@
-package me.sjlee.order.infra.in.queue;
+package me.sjlee.order.infra.in.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

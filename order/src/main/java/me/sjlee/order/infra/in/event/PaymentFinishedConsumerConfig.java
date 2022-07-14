@@ -1,4 +1,4 @@
-package me.sjlee.order.infra.in.queue;
+package me.sjlee.order.infra.in.event;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -17,7 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PaymentFinishedConsumerConfig {
 
-    public static final String PAYMENTS_CONSUMER_GROUP = "payments_consumer_group";
+    public static final String PAYMENTS_CONSUMER_GROUP = "order_payments_consumer_group";
 
     private final PaymentFinishedKafkaListener kafkaListener;
 

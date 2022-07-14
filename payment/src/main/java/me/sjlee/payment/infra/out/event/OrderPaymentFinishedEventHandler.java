@@ -1,4 +1,4 @@
-package me.sjlee.payment.infra.out.queue;
+package me.sjlee.payment.infra.out.event;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PaymentFinishedEventHandler {
+public class OrderPaymentFinishedEventHandler {
 
     private static final String PAYMENT_FINISHED_TOPIC = "payments";
 
@@ -25,10 +25,10 @@ public class PaymentFinishedEventHandler {
     public void handle(PaymentFinishedEvent event) {
         log.info("send kafka message to topic : {}, orderId : {}", PAYMENT_FINISHED_TOPIC, event.getOrderId());
 
-        PaymentFinishedRecord record = new PaymentFinishedRecord(event.getOrderId(), event.getAmount().getValue());
+        OrderPaymentFinishedRecord orderPaymentFinishedRecord = new OrderPaymentFinishedRecord(event.getOrderId(), event.getAmount().getValue());
 
         try {
-            kafkaTemplate.send(PAYMENT_FINISHED_TOPIC, objectMapper.writeValueAsString(record));
+            kafkaTemplate.send(PAYMENT_FINISHED_TOPIC, objectMapper.writeValueAsString(orderPaymentFinishedRecord));
         } catch (JsonProcessingException e) {
             log.error("[결제완료] 카프카 이벤트 전송 실패");
         }

@@ -1,4 +1,4 @@
-package me.sjlee.payment.infra.out.queue;
+package me.sjlee.payment.infra.out.event;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -17,7 +17,7 @@ import java.util.Map;
  * <a href="https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html"/>ref</a>
  */
 @Configuration
-public class KafkaProducerConfig {
+public class OrderKafkaProducerConfig {
 
     @Bean
     public ProducerFactory<String, String> producerFactory() {
