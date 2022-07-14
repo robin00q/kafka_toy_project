@@ -6,14 +6,19 @@
   - 프로듀서는 acks=all 옵션을 사용하기에, 복제된 파티션에 레코드가 저장됐을 경우에만 이벤트가 발행된다.
 
 ``` 
-bin/kafka-topics.sh --create \
+kafka-topics --create \
 --bootstrap-server localhost:9092 \
 --topic payments \
 --partitions 2 \
 --replication-factor 2
 
-bin/kafka-configs.sh \
+kafka-configs \
 --bootstrap-server localhost:9092 \
 --alter --add-config min.insync.replicas=2 \
+--topic payments
+
+kafka-topics --alter \
+--partitions 2 \
+--bootstrap-server localhost:9092 \
 --topic payments
 ```

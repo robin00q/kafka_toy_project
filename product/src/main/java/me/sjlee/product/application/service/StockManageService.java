@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.sjlee.product.application.client.order.OrderClient;
 import me.sjlee.product.application.client.order.OrderDetail;
-import me.sjlee.product.domain.exception.StockNotEnoughException;
 import me.sjlee.product.domain.models.PurchaseRecordStatus;
 import me.sjlee.product.domain.models.SalesOption;
 import me.sjlee.product.domain.models.SalesOptionPurchaseRecord;
@@ -37,7 +36,6 @@ public class StockManageService {
         boolean stockNotEnough = increaseStock(records);
         if (stockNotEnough) {
             decreaseStock(records);
-            throw new StockNotEnoughException("재고가 부족합니다.");
         }
     }
 
@@ -82,6 +80,7 @@ public class StockManageService {
 
         for (SalesOptionPurchaseRecord record : records) {
             if (!purchaseManageRepository.increaseStock(record)) {
+                log.info("재고 소진됨, productId : {}, optionId : {}", record.getProductId(), record.getOptionId());
                 stockNotEnough = true;
                 salesOptionSaveRepository.updateSoldOut(record.getOptionId());
             }
